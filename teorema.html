@@ -48,7 +48,36 @@
 
   <h3>Simulação</h3>
   <p>Implementação em JavaScript (com Chart.js, licença MIT, compatível com CC BY-SA):</p>
-    <pre>
+
+  <h3>Gráficos</h3>
+  <canvas id="graficoMediaQ" width="400" height="200"></canvas>
+  <canvas id="graficoDesvioQ" width="400" height="200"></canvas>
+
+  <h3>Resultados</h3>
+  <p>Simulações para <code>n = [50, 200, 1256, 10000, 1000000]</code>, com 1000 testes por <code>n</code>, indicam:</p>
+  <ul>
+    <li><code>n = 50</code>: <code>Q ≈ 50</code>, desvio ~10-15 (elevada variabilidade).</li>
+    <li><code>n = 200</code>: <code>Q ≈ 50</code>, desvio ~5 (início da estagnação).</li>
+    <li><code>n = 1256</code>: <code>Q ≈ 50</code>, desvio ~1 (entropia absoluta).</li>
+    <li><code>n ≥ 10000</code>: <code>Q ≈ 50</code>, desvio <0.5 (colapso total).</li>
+  </ul>
+  <p>A variância da mediana é:</p>
+  <p class="math">Var(p*) ≈ (π * 0.04) / (2 * n) = 0.1256 / n</p>
+  <p>Para <code>SD(Q) = 100 * sqrt(0.1256 / n) ≤ 1</code>:</p>
+  <p class="math">n ≥ 1256</p>
+  <p>Isto confirma o ponto de ruptura em <code>n ≈ 1256</code>, onde <code>Q</code> estabiliza na mediocridade.</p>
+
+  <h2>Aplicações</h2>
+  <ul>
+    <li><strong>Educação</strong>: O mínimo denominador comum, em sistemas democráticos de larga escala gera currículos padronizados, estabilizando <code>Q</code> em ~50. Na Suécia, o colapso educacional em zonas vulneráveis (ex.: menos de 50% concluem o ensino secundário) confirma esta limitação.</li>
+    <li><strong>Suécia</strong>: Com <code>n ≈ 10M</code>, o modelo prevê <code>Q ≈ 50</code>. A deterioração recente (violência, segregação migratória, polarização política) valida a convergência para a mediocridade, devido ao mínimo denominador comum.</li>
+    <li><strong>União Europeia</strong>: Com <code>n = 500M</code>, decisões baseadas no mínimo denominador comum (ex.: políticas migratórias genéricas) estabilizam <code>Q</code> em valores medíocres, confirmando o colapso previsto.</li>
+  </ul>
+
+  <h2>Conclusão</h2>
+  <p>O Teorema da Entropia Democrática, validado por simulações computacionais, demonstra que a democracia em larga escala (<code>n ≥ 1256</code>) é estruturalmente limitada, estabilizando <code>Q</code> em valores medíocres devido ao mínimo denominador comum. Soluções como reduzir a escala (<code>n</code>) ou adotar sistemas alternativos (ex.: votação por pontuação) podem mitigar esta limitação.</p>
+
+  <p class="license">© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob CC BY-SA 4.0. Cite a autora em qualquer uso. <a href="https://creativecommons.org/licenses/by-sa/4.0/">[Link]</a></p>
   <script>
       // Teorema da Entropia Democrática
       // Copyright (c) Lara Raquel Rodrigues Branco Arsénio, 2025
@@ -116,37 +145,5 @@
 
       plotarGraficos();
     </script>
-    </pre>
-  
-
-  <h3>Gráficos</h3>
-  <canvas id="graficoMediaQ" width="400" height="200"></canvas>
-  <canvas id="graficoDesvioQ" width="400" height="200"></canvas>
-
-  <h3>Resultados</h3>
-  <p>Simulações para <code>n = [50, 200, 1256, 10000, 1000000]</code>, com 1000 testes por <code>n</code>, indicam:</p>
-  <ul>
-    <li><code>n = 50</code>: <code>Q ≈ 50</code>, desvio ~10-15 (elevada variabilidade).</li>
-    <li><code>n = 200</code>: <code>Q ≈ 50</code>, desvio ~5 (início da estagnação).</li>
-    <li><code>n = 1256</code>: <code>Q ≈ 50</code>, desvio ~1 (entropia absoluta).</li>
-    <li><code>n ≥ 10000</code>: <code>Q ≈ 50</code>, desvio <0.5 (colapso total).</li>
-  </ul>
-  <p>A variância da mediana é:</p>
-  <p class="math">Var(p*) ≈ (π * 0.04) / (2 * n) = 0.1256 / n</p>
-  <p>Para <code>SD(Q) = 100 * sqrt(0.1256 / n) ≤ 1</code>:</p>
-  <p class="math">n ≥ 1256</p>
-  <p>Isto confirma o ponto de ruptura em <code>n ≈ 1256</code>, onde <code>Q</code> estabiliza na mediocridade.</p>
-
-  <h2>Aplicações</h2>
-  <ul>
-    <li><strong>Educação</strong>: O mínimo denominador comum, em sistemas democráticos de larga escala gera currículos padronizados, estabilizando <code>Q</code> em ~50. Na Suécia, o colapso educacional em zonas vulneráveis (ex.: menos de 50% concluem o ensino secundário) confirma esta limitação.</li>
-    <li><strong>Suécia</strong>: Com <code>n ≈ 10M</code>, o modelo prevê <code>Q ≈ 50</code>. A deterioração recente (violência, segregação migratória, polarização política) valida a convergência para a mediocridade, devido ao mínimo denominador comum.</li>
-    <li><strong>União Europeia</strong>: Com <code>n = 500M</code>, decisões baseadas no mínimo denominador comum (ex.: políticas migratórias genéricas) estabilizam <code>Q</code> em valores medíocres, confirmando o colapso previsto.</li>
-  </ul>
-
-  <h2>Conclusão</h2>
-  <p>O Teorema da Entropia Democrática, validado por simulações computacionais, demonstra que a democracia em larga escala (<code>n ≥ 1256</code>) é estruturalmente limitada, estabilizando <code>Q</code> em valores medíocres devido ao mínimo denominador comum. Soluções como reduzir a escala (<code>n</code>) ou adotar sistemas alternativos (ex.: votação por pontuação) podem mitigar esta limitação.</p>
-
-  <p class="license">© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob CC BY-SA 4.0. Cite a autora em qualquer uso. <a href="https://creativecommons.org/licenses/by-sa/4.0/">[Link]</a></p>
 </body>
 </html>

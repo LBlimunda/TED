@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       } catch (error) {
         console.error('Erro ao renderizar gráficos:', error);
-  }
+  });
     
   } catch (error) {
     console.error('Erro ao renderizar gráficos:', error);

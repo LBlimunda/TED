@@ -95,30 +95,14 @@ function simularMegaVotos(n, tamanhoGrupo = 1256, testes = 1000) {
   });
   return { ns, mediasQ, desviosQ, mediasQMega, desviosQMega };
 }
-
+*/
 document.addEventListener('DOMContentLoaded', function() {
   try {
-    const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
-    const ctx0 = document.getElementById('graficoMediaQ').getContext('2d');
-    new Chart(ctx0, {
-      type: 'line',
-      data: {
-        labels: ns,
-        datasets: [
-          { label: 'Média de Q (Votação Direta)', data: mediasQ, borderColor: 'blue', fill: false },
-          { label: 'Média de Q (Mega-Votos)', data: mediasQMega, borderColor: 'green', fill: false }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: { x: { title: { display: true, text: 'Escala (n)' } }, y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 0, max: 100 } },
-        plugins: { title: { display: true, text: 'Convergência de Q: Votação Direta vs. Mega-Votos' } }
-      }
-    });
+    plotarGraficos();
+    
         
 
-       const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
+/*const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
         const ctx1 = document.getElementById('graficoMediaQ').getContext('2d');
         new Chart(ctx1, {
           type: 'line',

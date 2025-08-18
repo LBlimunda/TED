@@ -38,7 +38,7 @@
   <h2>Enunciado</h2>
   <p>Nos sistemas democráticos majoritários, a pressão por coesão faz com que as decisões coletivas convirjam para o mínimo denominador comum, subotimizando <code>Q</code>. Para grandes valores de <code>n</code>, <code>Q</code> estabiliza em ~50, com entropia absoluta em <code>n ≈ 1256</code>, onde a variabilidade de <code>Q</code> é insignificante. Esta limitação estrutural torna matematicamente impossível alcançar decisões que otimizem <code>Q</code>.</p>
 
-  <div class="formulas">
+  <p class="formulas">
   <h3>Fórmulas Matemáticas</h3>
   <pre>
 <h4>Fórmula da Entropia Democrática:</h4>
@@ -48,7 +48,7 @@
   - Q_n tende a 50 (Mínimo Denominador Comum, MDC)  
   - SD(Q_n) ≤ 1 a partir de n ≈ 1256, refletindo entropia absoluta  
   </pre>
-  </div>
+  </p>
   <h2>Modelo</h2>
   <h3>Hipóteses</h3>
   <ul>
@@ -93,7 +93,7 @@
   
   <h2>Proposta de Mitigação</h2>
   <p>Para mitigar a entropia absoluta (<code>SD(Q) ≤ 1</code>) do Teorema da Entropia Democrática sem comprometer a validade dos votos, propõe-se agrupar os votantes em conjuntos de <code>n ≈ 1256</code>, cada um gerando um <strong>mega-voto</strong>, definido como a mediana das preferências do grupo (<code>p*_grupo = median(p_i, ..., p_1256)</code>). Estes mega-votos são calculados antes da votação final e usados para determinar a decisão coletiva, reduzindo a escala efetiva para <code>m = ⌈n / 1256⌉</code>. O agrupamento pré-votação é preferível, pois cada grupo opera no ponto de ruptura (<code>n ≈ 1256</code>), onde a variabilidade de <code>Q</code> é maior (<code>SD(Q) ≈ 1</code>), evitando a convergência para o mínimo denominador comum em larga escala.</p>
- <div class="formulas">
+ <p class="formulas">
   <h3>Fórmulas Matemáticas</h3>
   <pre>
 
@@ -105,7 +105,7 @@
   - maxM = 50 (amostragem limitada), com escalamento √(m / maxM)  
   - SD(Q_n) ≈ 1.00 preserva variabilidade, mas Q_n ≈ 50  
   </pre>
- </div>
+ </p>
   <p><strong>Simulação Teórica</strong>: Para uma população de <code>n = 10M</code> (ex.: Suécia), formam-se <code>m ≈ 7968</code> grupos de 1256 votantes. Cada grupo calcula <code>Q_grupo = p*_grupo × 100</code>, com <code>p*_grupo</code> seguindo <code>~N(0.5, sqrt(0.1256 / 1256))</code>, resultando em <code>SD(Q_grupo) ≈ 1</code>. A votação final entre os <code>m</code> mega-votos (<code>p* = median(p*_grupo1, ..., p*_grupom)</code>) mantém maior variabilidade do que a votação direta com <code>n = 10M</code> (<code>SD(Q) ≈ 0.035</code>). Simulações indicam que <code>Q</code> pode variar (ex.: <code>Q ∈ [40, 60]</code>), permitindo decisões menos medíocres, enquanto cada voto individual contribui igualmente para o mega-voto do seu grupo.</p>
   <p><strong>Validação</strong>: Esta abordagem preserva a validade democrática, pois cada grupo de 1256 votantes tem igual peso na votação final. Aplicada à Suécia (<code>n ≈ 10M</code>), pode mitigar a deterioração observada (violência, segregação, polarização), ao permitir decisões mais diversificadas. Na União Europeia (<code>n = 500M</code>, <code>m ≈ 398089</code>), o efeito seria semelhante, mas menos pronunciado devido à escala ainda elevada.</p>
 

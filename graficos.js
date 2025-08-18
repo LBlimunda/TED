@@ -81,7 +81,7 @@ function simularMegaVotos(n, tamanhoGrupo = 1256, testes = 1000) {
   return { mediaQ, desvioQ };
 }
 
-function gerarDadosGraficos() {
+/*function gerarDadosGraficos() {
   const ns = [50, 200, 1256, 10000, 1000000];
   let mediasQ = [], desviosQ = [], mediasQMega = [], desviosQMega = [];
   ns.forEach(n => {
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
         
 
-       /* const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
+       const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
         const ctx1 = document.getElementById('graficoMediaQ').getContext('2d');
         new Chart(ctx1, {
           type: 'line',
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: { title: { display: true, text: 'Convergência de Q: Votação Direta vs. Mega-Votos' } }
           }
         });
-*/
+
         const ctx2 = document.getElementById('graficoDesvioQ').getContext('2d');
         new Chart(ctx2, {
           type: 'line',
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
             scales: { x: { title: { display: true, text: 'Escala (n)' } }, y: { title: { display: true, text: 'Desvio de Q' }, min: 0 } },
             plugins: { title: { display: true, text: 'Variabilidade de Q: Votação Direta vs. Mega-Votos' } }
           }
-        });
+        });*/
 } catch (error) {
         console.error('Erro ao renderizar gráficos:', error);
   }

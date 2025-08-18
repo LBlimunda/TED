@@ -94,10 +94,7 @@ function mediana(arr) {
             plugins: { title: { display: true, text: 'Variabilidade de Q: Votação Direta vs. Mega-Votos' } }
           }
         });
-      } 
-catch (error) {
-        console.error('Erro ao renderizar gráficos:', error);
-];
+      
         let mediasQ = [], desviosQ = [];
         ns.forEach(n => {
           const { mediaQ, desvioQ } = simularDemocracia(n);

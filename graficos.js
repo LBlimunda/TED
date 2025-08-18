@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let Q = mediana(megaPrefs) * 100;
         Qs.push(Q);
       }
-      let desvioQ = Math.sqrt(Qs.reduce((sum, q) => sum + (q - 50) ** 2, 0) / testes); // Usa média teórica 50
+      let desvioQ = Math.sqrt(Qs.reduce((sum, q) => sum + (q - 50) ** 2, 0) / testes);
       return { desvioQ };
     }
 
@@ -71,8 +71,8 @@ document.addEventListener('DOMContentLoaded', function () {
       let mediasQ = [], desviosQ = [], desviosQMega = [], tamanhosGrupo = [];
       ns.forEach(n => {
         const { mediaQ, desvioQ } = simularDemocracia(n);
-        // Tamanho do grupo dinâmico, proporcional a n, mas evita grupos muito pequenos
-        const tamanhoGrupo = Math.max(50, Math.floor(n / 100));
+        // Tamanho do grupo dinâmico, próximo ao ponto de ruptura, mas limitado
+        const tamanhoGrupo = Math.min(n, 1000);
         const { desvioQ: desvioQMega } = simularMegaVotos(n, tamanhoGrupo);
         mediasQ.push(mediaQ);
         desviosQ.push(desvioQ);
@@ -97,13 +97,13 @@ document.addEventListener('DOMContentLoaded', function () {
         data: {
           labels: ns,
           datasets: [
-            { label: 'Média de Q (Votação Direta)', data: mediasQ, borderColor: 'pink', fill: false }
+            { label: 'Média de Q (Votação Direta)', data: mediasQ, borderColor: 'blue', fill: false }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          maxHeight: 300, // Mantido conforme original, mas ignorado pelo Chart.js
+          maxHeight: 300, // Mantido, mas ignorado pelo Chart.js
           scales: {
             x: { title: { display: true, text: 'Escala (n)' } },
             y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 0, max: 100 }
@@ -136,10 +136,10 @@ document.addEventListener('DOMContentLoaded', function () {
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          maxHeight: 300, // Mantido conforme original, mas ignorado pelo Chart.js
+          maxHeight: 300, // Mantido, mas ignorado pelo Chart.js
           scales: {
             x: { title: { display: true, text: 'Escala (n)' } },
-            y: { title: { display: true, text: 'Desvio de Q (Entropia)' }, min: 0 }
+            y: { title: { display: true, text: 'Desvio de Q (Entropia)' }, min: 0, max: 15 }
           },
           plugins: {
             title: { display: true, text: 'Mitigação da Entropia: Mega-Votos vs. Votação Direta' },

@@ -4,6 +4,17 @@
 
 document.addEventListener('DOMContentLoaded', function () {
   try {
+    // Verifica se os elementos canvas existem
+    const canvasMediaQ = document.getElementById('graficoMediaQ');
+    const canvasDesvioQ = document.getElementById('graficoDesvioQ');
+    if (!canvasMediaQ || !canvasDesvioQ) {
+      throw new Error('Elementos canvas não encontrados');
+    }
+
+    // Define altura máxima de 300px via CSS
+    canvasMediaQ.style.maxHeight = '300px';
+    canvasDesvioQ.style.maxHeight = '300px';
+
     // Função para calcular a mediana
     function mediana(arr) {
       const sorted = arr.slice().sort((a, b) => a - b);
@@ -70,8 +81,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function plotarGraficos() {
       const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
 
-      // Gráfico de Média de Q
-      const ctx1 = document.getElementById('graficoMediaQ').getContext('2d');
+      // Gráfico 1: Média de Q (Problema)
+      const ctx1 = canvasMediaQ.getContext('2d');
       new Chart(ctx1, {
         type: 'line',
         data: {
@@ -84,10 +95,10 @@ document.addEventListener('DOMContentLoaded', function () {
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          maxHeight: 300,
+          maxHeight: 300, // Mantido conforme pedido, mas não afeta (controlado por CSS)
           scales: {
             x: { title: { display: true, text: 'Escala (n)' } },
-            y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 0, max: 20 }
+            y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 0, max: 100 }
           },
           plugins: {
             title: { display: true, text: 'Convergência de Q: Votação Direta vs. Mega-Votos' }
@@ -95,8 +106,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
 
-      // Gráfico de Desvio de Q
-      const ctx2 = document.getElementById('graficoDesvioQ').getContext('2d');
+      // Gráfico 2: Desvio de Q (Solução Megavotos)
+      const ctx2 = canvasDesvioQ.getContext('2d');
       new Chart(ctx2, {
         type: 'line',
         data: {
@@ -109,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          maxHeight: 300,
+          maxHeight: 300, // Mantido conforme pedido, mas não afeta (controlado por CSS)
           scales: {
             x: { title: { display: true, text: 'Escala (n)' } },
             y: { title: { display: true, text: 'Desvio de Q' }, min: 0 }

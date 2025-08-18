@@ -46,7 +46,7 @@ function mediana(arr) {
             plugins: { title: { display: true, text: 'Convergência de Q no Teorema da Entropia Democrática' } }
           }
         });
-
+/*
         const ctx2 = document.getElementById('graficoDesvioQ').getContext('2d');
         new Chart(ctx2, {
           type: 'line',
@@ -58,7 +58,7 @@ function mediana(arr) {
             scales: { x: { title: { display: true, text: 'Escala (n)' } }, y: { title: { display: true, text: 'Desvio de Q' }, min: 0 } },
             plugins: { title: { display: true, text: 'Colapso da Variabilidade (Entropia Absoluta)' } }
           }
-        });
+        });*/
       }
 
 function simularMegaVotos(n, tamanhoGrupo = 1256, testes = 1000) {

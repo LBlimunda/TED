@@ -1,12 +1,16 @@
 // Copyright (c) Lara Raquel Rodrigues Branco Arsénio, 2025
 // Licensed under CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/
 // Inclui Chart.js (MIT License): https://github.com/chartjs/Chart.js/blob/master/LICENSE
+document.addEventListener('DOMContentLoaded', function() {
+  
+    try {
+    
 
-function mediana(arr) {
+    function mediana(arr) {
         const sorted = arr.slice().sort((a, b) => a - b);
         const meio = Math.floor(sorted.length / 2);
         return sorted.length % 2 === 0 ? (sorted[meio - 1] + sorted[meio]) / 2 : sorted[meio];
-}
+     }
 
       function simularDemocracia(n, testes = 1000) {
         let Qs = [];
@@ -122,37 +126,6 @@ function mediana(arr) {
 
         const ctx2 = document.getElementById('graficoDesvioQ').getContext('2d');
         new Chart(ctx2, {
-          type: 'line',
-          data: {
-            labels: ns,
-            datasets: [{ label: 'Desvio de Q', data: desviosQ, borderColor: 'red', fill: false }]
-          },
-          options: {
-            scales: { x: { title: { display: true, text: 'Escala (n)' } }, y: { title: { display: true, text: 'Desvio de Q' }, min: 0 } },
-            plugins: { title: { display: true, text: 'Colapso da Variabilidade (Entropia Absoluta)' } }
-          }
-        });
-      }
-
-function simularMegaVotos(n, tamanhoGrupo = 1256, testes = 1000) {
-  let Qs = [];
-  const m = Math.ceil(n / tamanhoGrupo);
-  for (let i = 0; i < testes; i++) {
-    let megaPrefs = [];
-    for (let j = 0; j < m; j++) {
-      let grupoPrefs = Array(Math.min(tamanhoGrupo, n - j * tamanhoGrupo)).fill()
-        .map(() => Math.max(0, Math.min(1, 0.5 + 0.2 * (Math.random() - 0.5) * 2)));
-      let pGrupo = mediana(grupoPrefs);
-      megaPrefs.push(pGrupo);
-    }
-    let Q = mediana(megaPrefs) * 100;
-    Qs.push(Q);
-  }
-  let mediaQ = Qs.reduce((sum, q) => sum + q, 0) / testes;
-  let desvioQ = Math.sqrt(Qs.reduce((sum, q) => sum + (q - mediaQ) ** 2, 0) / testes);
- 
-  return { mediaQ, desvioQ };
-}
 
 /*function gerarDadosGraficos() {
   const ns = [50, 200, 1256, 10000, 1000000];
@@ -170,9 +143,6 @@ function simularMegaVotos(n, tamanhoGrupo = 1256, testes = 1000) {
 }
 */
 
-document.addEventListener('DOMContentLoaded', function() {
-  try {
-    plotarGraficos();
 
 /*const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
         const ctx1 = document.getElementById('graficoMediaQ').getContext('2d');
@@ -210,6 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: { title: { display: true, text: 'Variabilidade de Q: Votação Direta vs. Mega-Votos' } }
           }
         });*/
+        plotarGraficos();
 } catch (error) {
         console.error('Erro ao renderizar gráficos:', error);
   }

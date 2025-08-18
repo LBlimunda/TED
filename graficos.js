@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
           maintainAspectRatio: false,
           scales: {
             x: { title: { display: true, text: 'Escala (n)' } },
-            y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 0, max: 100 }
+            y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 0, max: 20 }
           },
           plugins: {
             title: { display: true, text: 'Convergência de Q: Votação Direta vs. Mega-Votos' }

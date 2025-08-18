@@ -124,8 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         });
 
-        const ctx2 = document.getElementById('graficoDesvioQ').getContext('2d');
-        new Chart(ctx2, {
 
 /*function gerarDadosGraficos() {
   const ns = [50, 200, 1256, 10000, 1000000];
@@ -180,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: { title: { display: true, text: 'Variabilidade de Q: Votação Direta vs. Mega-Votos' } }
           }
         });*/
-        plotarGraficos();
+        plotarGraficos()
 } catch (error) {
         console.error('Erro ao renderizar gráficos:', error);
   }

@@ -42,12 +42,7 @@
   <h3>Fórmulas Matemáticas</h3>
   <pre>
 <h4>Fórmula da Entropia Democrática:</h4>
-  Q_n = 100 * median(p_{i,1}, p_{i,2}, ..., p_{i,n}),  
-  onde p_i ~ N(0.5, 0.2^2)  
-  SD(Q_n) ≈ 100 * √(0.1256 / n)  para n ≥ 1256  
-  - Q_n tende a 50 (Mínimo Denominador Comum, MDC)  
-  - SD(Q_n) ≤ 1 a partir de n ≈ 1256, refletindo entropia absoluta  
-  </pre>
+Q_n = 100 \cdot \text{median}(p_{i,1}, p_{i,2}, \ldots, p_{i,n}), \quad SD(Q_n) = 100 \cdot \sqrt{\frac{0.1256}{n}} \quad \text{para } n \geq 1256  </pre>
   </p>
   <h2>Modelo</h2>
   <h3>Hipóteses</h3>
@@ -98,12 +93,7 @@
   <pre>
 
 <h4>Fórmula da Mitigação por Mega-Voto:</h4>
-  Q_n = 100 * median(m_j),  
-  onde m_j = median(p_{i,j,1}, ..., p_{i,j,g})  
-  g = min(n, 1000),  m = ⌈n / g⌉  
-  SD(Q_n) ≈ 1.00 * √(m / maxM)  
-  - maxM = 50 (amostragem limitada), com escalamento √(m / maxM)  
-  - SD(Q_n) ≈ 1.00 preserva variabilidade, mas Q_n ≈ 50  
+  Q_n = 100 \cdot \text{median}(m_j), \quad m_j = \text{median}(p_{i,j,1}, \ldots, p_{i,j,g}), \quad g = \min(n, 1000), \quad m = \lceil \frac{n}{g} \rceil, \quad SD(Q_n) = 1.00 \cdot \sqrt{\frac{m}{\max M}}
   </pre>
  </p>
   <p><strong>Simulação Teórica</strong>: Para uma população de <code>n = 10M</code> (ex.: Suécia), formam-se <code>m ≈ 7968</code> grupos de 1256 votantes. Cada grupo calcula <code>Q_grupo = p*_grupo × 100</code>, com <code>p*_grupo</code> seguindo <code>~N(0.5, sqrt(0.1256 / 1256))</code>, resultando em <code>SD(Q_grupo) ≈ 1</code>. A votação final entre os <code>m</code> mega-votos (<code>p* = median(p*_grupo1, ..., p*_grupom)</code>) mantém maior variabilidade do que a votação direta com <code>n = 10M</code> (<code>SD(Q) ≈ 0.035</code>). Simulações indicam que <code>Q</code> pode variar (ex.: <code>Q ∈ [40, 60]</code>), permitindo decisões menos medíocres, enquanto cada voto individual contribui igualmente para o mega-voto do seu grupo.</p>

@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste do Teorema</title>
+    <!-- MathJax para fórmulas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    <!-- Chart.js para gráficos (minificado, ~60 KB) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .canvas-panel { border: 1px solid #ccc; padding: 10px; margin: 20px 0; }
+        canvas { max-width: 100%; }
+        .tabs { margin-bottom: 10px; }
+        .tab-button { padding: 5px 10px; cursor: pointer; }
+        .tab-button.active { background-color: #4CAF50; color: white; }
+    </style>
+</head>
+<body>
+    <h2>Teorema da Qualidade de Vida</h2>
+    <p>Fórmulas:</p>
+    <p>
+        1. Original: \[ Q_n = 100 \cdot \text{med}(p_1, p_2, \dots, p_n), \quad \sigma(Q_n) = 100 \cdot \sqrt{\frac{0.1256}{n}}, \quad \forall n \geq 1256 \]
+    </p>
+    <p>
+        2. Agrupamento: \[ Q_n = 100 \cdot \text{med}(m_j), \quad m_j = \text{med}(p_{j1}, \dots, p_{jg}), \quad g = \min(n, 1000), \quad m = \lceil n / g \rceil, \quad \sigma(Q_n) = \sqrt{\frac{m}{50}} \]
+    </p>
+    <p>
+        3. Reformulada: \[ Q_n = 100 \cdot \text{med}(p_1, p_2, \dots, p_n), \quad \sigma(Q_n) = \frac{50}{f(\mu) \sqrt{n}} \]
+    </p>
+    <h3>Simulação</h3>
+    <p>Distribuição: <select id="distribution">
+        <option value="uniform">Uniforme [0, 1]</option>
+        <option value="beta">Beta(2, 2)</option>
+    </select></p>
+    <p>Número de votantes (n): <input type="number" id="nVoters" value="2000" min="100" max="10000"></p>
+    <p>Número de simulações: <input type="number" id="nSim" value="1000" min="100" max="5000"></p>
+    <button onclick="runSimulation()">Simular</button>
+    <h3>Resultados</h3>
+    <p id="results"></p>
+    <h3>Visualização (Canvas Separado)</h3>
+    <div class="canvas-panel">
+        <div class="tabs">
+            <button class="tab-button active" onclick="showChart('qnChart')">Histograma de Q_n</button>
+            <button class="tab-button" onclick="showChart('sigmaChart')">σ(Q_n) vs. n</button>
+        </div>
+        <canvas id="qnChart" style="display: block;"></canvas>
+        <canvas id="sigmaChart" style="display: none;"></canvas>
+    </div>
+
+    <script>
+        // Função para calcular a mediana
+        function median(values) {
+            const sorted = [...values].sort((a, b) => a - b);
+            const mid = Math.floor(sorted.length / 2);
+            return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+        }
+
+        // Função para gerar Beta(2,2)
+        function betaRandom(alpha, beta, size) {
+            const u = new Array(size).fill().map(() => Math.random());
+            return u.map(() => {
+                let x = 0;
+                for (let i = 0; i < alpha; i++) x += Math.random();
+                for (let i = 0; i < beta; i++) x += Math.random();
+                return x / (alpha + beta);
+            });
+        }
+
+        // Alternar entre gráficos
+        function showChart(activeId) {
+            document.getElementById('qnChart').style.display = activeId === 'qnChart' ? 'block' : 'none';
+            document.getElementById('sigmaChart').style.display = activeId === 'sigmaChart' ? 'block' : 'none';
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.toggle('active', btn.onclick.toString().includes(activeId));
+            });
+        }
+
+        // Função principal de simulação
+        function runSimulation() {
+            const dist = document.getElementById('distribution').value;
+            const n = parseInt(document.getElementById('nVoters').value);
+            const nSim = parseInt(document.getElementById('nSim').value);
+
+            // Gera preferências p_i
+            const generateData = dist === 'uniform' 
+                ? () => new Array(n).fill().map(() => Math.random())
+                : () => betaRandom(2, 2, n);
+
+            // Calcula f(μ)
+            const fMu = dist === 'uniform' ? 1.0 : 1.5;
+
+            // Simula Q_n (Fórmula 1: Original)
+            const Qn1Values = [];
+            for (let i = 0; i < nSim; i++) {
+                const data = generateData();
+                Qn1Values.push(100 * median(data));
+            }
+            const Qn1Mean = Qn1Values.reduce((sum, x) => sum + x, 0) / nSim;
+            const sigmaQn1Empirical = Math.sqrt(Qn1Values.reduce((sum, x) => sum + (x - Qn1Mean) ** 2, 0) / (nSim - 1));
+            const sigmaQn1Theoretical = n >= 1256 ? 100 * Math.sqrt(0.1256 / n) : 'N/A (n < 1256)';
+            const rupturePoint1 = n >= 1256 ? 1256 : 'N/A';
+
+            // Simula Q_n (Fórmula 2: Agrupamento)
+            const Qn2Values = [];
+            const g = Math.min(n, 1000);
+            const m = Math.ceil(n / g);
+            for (let i = 0; i < nSim; i++) {
+                const data = generateData();
+                const mj = [];
+                for (let j = 0; j < m; j++) {
+                    const start = j * g;
+                    const end = Math.min((j + 1) * g, n);
+                    mj.push(median(data.slice(start, end)));
+                }
+                Qn2Values.push(100 * median(mj));
+            }
+            const Qn2Mean = Qn2Values.reduce((sum, x) => sum + x, 0) / nSim;
+            const sigmaQn2Empirical = Math.sqrt(Qn2Values.reduce((sum, x) => sum + (x - Qn2Mean) ** 2, 0) / (nSim - 1));
+            const sigmaQn2Theoretical = Math.sqrt(m / 50);
+            const rupturePoint2 = Math.ceil(50 * 50); // m ≤ 50 → n ≤ 50 * g = 50000
+
+            // Simula Q_n (Fórmula Reformulada)
+            const Qn3Values = Qn1Values; // Mesma mediana da Fórmula 1
+            const Qn3Mean = Qn1Mean;
+            const sigmaQn3Empirical = sigmaQn1Empirical;
+            const sigmaQn3Theoretical = 50 / (fMu * Math.sqrt(n));
+            const rupturePoint3 = Math.ceil((50 / fMu) ** 2);
+
+            // Exibe resultados
+            document.getElementById('results').innerHTML = `
+                <strong>Fórmula 1 (Original):</strong><br>
+                Q_n médio: ${Qn1Mean.toFixed(2)}<br>
+                σ(Q_n) teórico: ${typeof sigmaQn1Theoretical === 'number' ? sigmaQn1Theoretical.toFixed(2) : sigmaQn1Theoretical}<br>
+                σ(Q_n) empírico: ${sigmaQn1Empirical.toFixed(2)}<br>
+                Ponto de ruptura: ${rupturePoint1}<br><br>
+                <strong>Fórmula 2 (Agrupamento):</strong><br>
+                Q_n médio: ${Qn2Mean.toFixed(2)}<br>
+                σ(Q_n) teórico: ${sigmaQn2Theoretical.toFixed(2)}<br>
+                σ(Q_n) empírico: ${sigmaQn2Empirical.toFixed(2)}<br>
+                Ponto de ruptura: ${rupturePoint2}<br><br>
+                <strong>Fórmula Reformulada:</strong><br>
+                Q_n médio: ${Qn3Mean.toFixed(2)}<br>
+                σ(Q_n) teórico: ${sigmaQn3Theoretical.toFixed(2)}<br>
+                σ(Q_n) empírico: ${sigmaQn3Empirical.toFixed(2)}<br>
+                Ponto de ruptura: ${rupturePoint3}
+            `;
+
+            // Histograma de Q_n
+            const qnCtx = document.getElementById('qnChart').getContext('2d');
+            new Chart(qnCtx, {
+                type: 'histogram',
+                data: {
+                    datasets: [
+                        { label: 'Q_n (Original)', data: Qn1Values.map(x => ({ x, y: 1 })), backgroundColor: 'rgba(75, 192, 192, 0.5)', borderColor: 'rgba(75, 192, 192, 1)', borderWidth: 1 },
+                        { label: 'Q_n (Agrupamento)', data: Qn2Values.map(x => ({ x, y: 1 })), backgroundColor: 'rgba(255, 99, 132, 0.5)', borderColor: 'rgba(255, 99, 132, 1)', borderWidth: 1 }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: { title: { display: true, text: 'Q_n' }, min: 0, max: 100 },
+                        y: { title: { display: true, text: 'Frequência' } }
+                    }
+                }
+            });
+
+            // Gráfico de σ(Q_n) vs. n
+            const nValues = Array.from({ length: 10 }, (_, i) => 500 + i * 1000);
+            const sigma1Values = nValues.map(n => n >= 1256 ? 100 * Math.sqrt(0.1256 / n) : null);
+            const sigma2Values = nValues.map(n => {
+                const m = Math.ceil(n / Math.min(n, 1000));
+                return Math.sqrt(m / 50);
+            });
+            const sigma3Values = nValues.map(n => 50 / (fMu * Math.sqrt(n)));
+            const sigmaCtx = document.getElementById('sigmaChart').getContext('2d');
+            new Chart(sigmaCtx, {
+                type: 'line',
+                data: {
+                    labels: nValues,
+                    datasets: [
+                        { label: 'σ(Q_n) Original', data: sigma1Values, borderColor: 'rgba(75, 192, 192, 1)', fill: false },
+                        { label: 'σ(Q_n) Agrupamento', data: sigma2Values, borderColor: 'rgba(255, 99, 132, 1)', fill: false },
+                        { label: 'σ(Q_n) Reformulada', data: sigma3Values, borderColor: 'rgba(54, 162, 235, 1)', fill: false },
+                        { label: 'Limiar (σ = 1)', data: Array(nValues.length).fill(1), borderColor: 'rgba(0, 0, 0, 0.5)', borderDash: [5, 5] }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: { title: { display: true, text: 'n (Número de votantes)' } },
+                        y: { title: { display: true, text: 'σ(Q_n)' }, min: 0 }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

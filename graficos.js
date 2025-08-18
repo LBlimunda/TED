@@ -58,7 +58,7 @@ function mediana(arr) {
           return { ns, mediasQ, desviosQ, mediasQMega, desviosQMega };
         }
 
-        const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
+        //const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
         const ctx1 = document.getElementById('graficoMediaQ').getContext('2d');
         new Chart(ctx1, {
           type: 'line',

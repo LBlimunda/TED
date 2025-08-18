@@ -160,13 +160,3 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Erro ao renderizar gráficos:', error);
   });
     
-  } catch (error) {
-    console.error('Erro ao renderizar gráficos:', error);
-  }
-/*});
-// Código de execução
-document.addEventListener('DOMContentLoaded', function() {
-      try {
-        
-        
-    });

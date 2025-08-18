@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        maxHeight: 400, // Fixa a altura máxima em 200px
+        maxHeight: 300, // Fixa a altura máxima em 200px
         scales: {
           x: {
             title: { display: true, text: 'Escala (n)', font: { size: 12 } },
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        maxHeight: 400, // Fixa a altura máxima em 200px
+        maxHeight: 300, // Fixa a altura máxima em 200px
         scales: {
           x: {
             title: { display: true, text: 'Escala (n)', font: { size: 12 } },

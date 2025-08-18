@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: { title: { display: true, text: 'Variabilidade de Q: Votação Direta vs. Mega-Votos' } }
           }
         });*/
-        plotarGraficos()
+        plotarGraficos();
 } catch (error) {
         console.error('Erro ao renderizar gráficos:', error);
   }

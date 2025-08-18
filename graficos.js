@@ -37,6 +37,7 @@ function simularMegaVotos(n, tamanhoGrupo = 1256, testes = 1000) {
   }
   let mediaQ = Qs.reduce((sum, q) => sum + q, 0) / testes;
   let desvioQ = Math.sqrt(Qs.reduce((sum, q) => sum + (q - mediaQ) ** 2, 0) / testes);
+ 
   return { mediaQ, desvioQ };
 }
 

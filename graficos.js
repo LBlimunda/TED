@@ -81,27 +81,26 @@ document.addEventListener('DOMContentLoaded', function () {
     function plotarGraficos() {
       const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
 
-      // Gráfico 1: Média de Q (Problema)
+      // Gráfico 1: Média de Q (apenas votação direta)
       const ctx1 = canvasMediaQ.getContext('2d');
       new Chart(ctx1, {
         type: 'line',
         data: {
           labels: ns,
           datasets: [
-            { label: 'Média de Q (Votação Direta)', data: mediasQ, borderColor: 'blue', fill: false },
-            { label: 'Média de Q (Mega-Votos)', data: mediasQMega, borderColor: 'green', fill: false }
+            { label: 'Média de Q (Votação Direta)', data: mediasQ, borderColor: 'blue', fill: false }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          maxHeight: 300, // Mantido conforme pedido, mas não afeta (controlado por CSS)
+          maxHeight: 300, // Mantido conforme original, mas ignorado pelo Chart.js
           scales: {
             x: { title: { display: true, text: 'Escala (n)' } },
             y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 0, max: 100 }
           },
           plugins: {
-            title: { display: true, text: 'Convergência de Q: Votação Direta vs. Mega-Votos' }
+            title: { display: true, text: 'Convergência de Q: Votação Direta' }
           }
         }
       });
@@ -120,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          maxHeight: 300, // Mantido conforme pedido, mas não afeta (controlado por CSS)
+          maxHeight: 300, // Mantido conforme original, mas ignorado pelo Chart.js
           scales: {
             x: { title: { display: true, text: 'Escala (n)' } },
             y: { title: { display: true, text: 'Desvio de Q' }, min: 0 }

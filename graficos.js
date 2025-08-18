@@ -96,11 +96,10 @@ function simularMegaVotos(n, tamanhoGrupo = 1256, testes = 1000) {
   return { ns, mediasQ, desviosQ, mediasQMega, desviosQMega };
 }
 */
+
 document.addEventListener('DOMContentLoaded', function() {
   try {
     plotarGraficos();
-    
-        
 
 /*const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
         const ctx1 = document.getElementById('graficoMediaQ').getContext('2d');

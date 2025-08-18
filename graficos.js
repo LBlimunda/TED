@@ -3,163 +3,127 @@
 // Inclui Chart.js (MIT License): https://github.com/chartjs/Chart.js/blob/master/LICENSE
 
 document.addEventListener('DOMContentLoaded', function () {
-  function plotarGraficos() {
-    const ctx1 = document.getElementById('graficoMediaQ');
-    if (!ctx1) {
-      console.error('Elemento com ID "graficoMediaQ" não encontrado.');
-      return;
-    }
-    const ctx2 = document.getElementById('graficoDesvioQ');
-    if (!ctx2) {
-      console.error('Elemento com ID "graficoDesvioQ" não encontrado.');
-      return;
+  try {
+    // Função para calcular a mediana
+    function mediana(arr) {
+      const sorted = arr.slice().sort((a, b) => a - b);
+      const meio = Math.floor(sorted.length / 2);
+      return sorted.length % 2 === 0 ? (sorted[meio - 1] + sorted[meio]) / 2 : sorted[meio];
     }
 
-    const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
-
-    // Gráfico 1: Média de Q (Parte 1 - Convergência para a Mediana)
-    new Chart(ctx1.getContext('2d'), {
-      type: 'line',
-      data: {
-        labels: ns,
-        datasets: [
-          {
-            label: 'Média Q (Votação Direta)',
-            data: mediasQ,
-            borderColor: '#1E90FF', // Azul
-            backgroundColor: '#1E90FF',
-            pointRadius: 4,
-            borderWidth: 2,
-            fill: false
-          },
-          {
-            label: 'Média Q (Mega-Votos)',
-            data: mediasQMega,
-            borderColor: '#32CD32', // Verde
-            backgroundColor: '#32CD32',
-            pointRadius: 4,
-            borderWidth: 2,
-            fill: false
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        maxHeight: 300, // Fixa a altura máxima em 200px
-        scales: {
-          x: {
-            title: { display: true, text: 'Escala (n)', font: { size: 12 } },
-            ticks: { font: { size: 10 } }
-          },
-          y: {
-            title: { display: true, text: 'Média de Q', font: { size: 12 } },
-            ticks: {
-              font: { size: 10 },
-              stepSize: 0.1, // Ticks finos para convergência
-              precision: 1
-            },
-            min: Math.min(0, Math.min(...mediasQ, ...mediasQMega) * 0.95),
-            max: Math.max(1, Math.max(...mediasQ, ...mediasQMega) * 1.05)
-          }
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: 'Parte 1: Convergência para Mediana (Estagnação)',
-            font: { size: 14 },
-            padding: 8
-          },
-          legend: {
-            position: 'top',
-            labels: { font: { size: 10 }, boxWidth: 20 }
-          },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                return `${context.dataset.label}: ${context.parsed.y.toFixed(2)}`;
-              }
-            }
-          }
-        },
-        layout: {
-          padding: { top: 5, bottom: 5, left: 10, right: 10 }
-        }
+    // Simula votação direta
+    function simularDemocracia(n, testes = 1000) {
+      let Qs = [];
+      for (let i = 0; i < testes; i++) {
+        let prefs = Array(n)
+          .fill()
+          .map(() => Math.max(0, Math.min(1, 0.5 + 0.2 * (Math.random() - 0.5) * 2)));
+        let Q = mediana(prefs) * 100;
+        Qs.push(Q);
       }
-    });
+      let mediaQ = Qs.reduce((sum, q) => sum + q, 0) / testes;
+      let desvioQ = Math.sqrt(Qs.reduce((sum, q) => sum + (q - mediaQ) ** 2, 0) / testes);
+      return { mediaQ, desvioQ };
+    }
 
-    // Gráfico 2: Desvio de Q (Parte 2 - Solução com Mega-Votos)
-    new Chart(ctx2.getContext('2d'), {
-      type: 'line',
-      data: {
-        labels: ns,
-        datasets: [
-          {
-            label: 'Desvio Q (Votação Direta)',
-            data: desviosQ,
-            borderColor: '#FF4500', // Vermelho
-            backgroundColor: '#FF4500',
-            pointRadius: 4,
-            borderWidth: 2,
-            fill: false
-          },
-          {
-            label: 'Desvio Q (Mega-Votos)',
-            data: desviosQMega,
-            borderColor: '#FFA500', // Laranja
-            backgroundColor: '#FFA500',
-            pointRadius: 4,
-            borderWidth: 2,
-            fill: false
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        maxHeight: 300, // Fixa a altura máxima em 200px
-        scales: {
-          x: {
-            title: { display: true, text: 'Escala (n)', font: { size: 12 } },
-            ticks: { font: { size: 10 } }
-          },
-          y: {
-            title: { display: true, text: 'Desvio de Q', font: { size: 12 } },
-            ticks: {
-              font: { size: 10 },
-              stepSize: 0.05, // Ticks finos para variabilidade
-              precision: 2
-            },
-            min: 0,
-            max: Math.max(0.5, Math.max(...desviosQ, ...desviosQMega) * 1.2)
-          }
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: 'Parte 2: Mega-Votos Preservam Variabilidade',
-            font: { size: summersize: 14 },
-            padding: 8
-          },
-          legend: {
-            position: 'top',
-            labels: { font: { size: 10 }, boxWidth: 20 }
-          },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                return `${context.dataset.label}: ${context.parsed.y.toFixed(2)}`;
-              }
-            }
-          }
-        },
-        layout: {
-          padding: { top: 5, bottom: 5, left: 10, right: 10 }
+    // Simula votação com mega-votos
+    function simularMegaVotos(n, tamanhoGrupo = 1256, testes = 1000) {
+      let Qs = [];
+      const m = Math.ceil(n / tamanhoGrupo);
+      for (let i = 0; i < testes; i++) {
+        let megaPrefs = [];
+        for (let j = 0; j < m; j++) {
+          let grupoPrefs = Array(Math.min(tamanhoGrupo, n - j * tamanhoGrupo))
+            .fill()
+            .map(() => Math.max(0, Math.min(1, 0.5 + 0.2 * (Math.random() - 0.5) * 2)));
+          let pGrupo = mediana(grupoPrefs);
+          megaPrefs.push(pGrupo);
         }
+        let Q = mediana(megaPrefs) * 100;
+        Qs.push(Q);
       }
-    });
+      let mediaQ = Qs.reduce((sum, q) => sum + q, 0) / testes;
+      let desvioQ = Math.sqrt(Qs.reduce((sum, q) => sum + (q - mediaQ) ** 2, 0) / testes);
+      return { mediaQ, desvioQ };
+    }
+
+    // Gera dados para os gráficos
+    function gerarDadosGraficos() {
+      const ns = [50, 200, 1256, 10000];
+      let mediasQ = [], desviosQ = [], mediasQMega = [], desviosQMega = [];
+      ns.forEach(n => {
+        const { mediaQ, desvioQ } = simularDemocracia(n);
+        const { mediaQ: mediaQMega, desvioQ: desvioQMega } = simularMegaVotos(n);
+        mediasQ.push(mediaQ);
+        desviosQ.push(desvioQ);
+        mediasQMega.push(mediaQMega);
+        desviosQMega.push(desvioQMega);
+        console.log(
+          `n=${n}, Q médio=${mediaQ.toFixed(2)}, Desvio Q=${desvioQ.toFixed(2)}, ` +
+          `Q médio (mega-votos)=${mediaQMega.toFixed(2)}, Desvio Q (mega-votos)=${desvioQMega.toFixed(2)}`
+        );
+      });
+      return { ns, mediasQ, desviosQ, mediasQMega, desviosQMega };
+    }
+
+    // Plota os gráficos
+    function plotarGraficos() {
+      const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
+
+      // Gráfico de Média de Q
+      const ctx1 = document.getElementById('graficoMediaQ').getContext('2d');
+      new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: ns,
+          datasets: [
+            { label: 'Média de Q (Votação Direta)', data: mediasQ, borderColor: 'blue', fill: false },
+            { label: 'Média de Q (Mega-Votos)', data: mediasQMega, borderColor: 'green', fill: false }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          maxHeight: 300,
+          scales: {
+            x: { title: { display: true, text: 'Escala (n)' } },
+            y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 0, max: 20 }
+          },
+          plugins: {
+            title: { display: true, text: 'Convergência de Q: Votação Direta vs. Mega-Votos' }
+          }
+        }
+      });
+
+      // Gráfico de Desvio de Q
+      const ctx2 = document.getElementById('graficoDesvioQ').getContext('2d');
+      new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: ns,
+          datasets: [
+            { label: 'Desvio de Q (Votação Direta)', data: desviosQ, borderColor: 'red', fill: false },
+            { label: 'Desvio de Q (Mega-Votos)', data: desviosQMega, borderColor: 'orange', fill: false }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          maxHeight: 300,
+          scales: {
+            x: { title: { display: true, text: 'Escala (n)' } },
+            y: { title: { display: true, text: 'Desvio de Q' }, min: 0 }
+          },
+          plugins: {
+            title: { display: true, text: 'Variabilidade de Q: Votação Direta vs. Mega-Votos' }
+          }
+        }
+      });
+    }
+
+    // Executa a geração e plotagem dos gráficos
+    plotarGraficos();
+  } catch (error) {
+    console.error('Erro ao renderizar gráficos:', error);
   }
-
-  // Chama a função após o DOM estar carregado
-  plotarGraficos();
 });

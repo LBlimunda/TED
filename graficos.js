@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Gera dados para os gráficos
     function gerarDadosGraficos() {
-      const ns = [50, 200, 1256, 10000, 1000000];
+      const ns = [50, 200, 1256, 10000, 100000];
       let mediasQ = [], desviosQ = [], desviosQMega = [], tamanhosGrupo = [];
       ns.forEach(n => {
         const { mediaQ, desvioQ } = simularDemocracia(n);

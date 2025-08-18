@@ -45,8 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
       return { mediaQ, desvioQ };
     }
 
-    // Simula votação com mega-votos (tamanhoGrupo = 1256 como ponto de entropia)
-    function simularMegaVotos(n, tamanhoGrupo = 1256, testes = 1000) {
+    // Simula votação com mega-votos
+    function simularMegaVotos(n, tamanhoGrupo, testes = 1000) {
       let Qs = [];
       const m = Math.ceil(n / tamanhoGrupo);
       for (let i = 0; i < testes; i++) {
@@ -61,32 +61,34 @@ document.addEventListener('DOMContentLoaded', function () {
         let Q = mediana(megaPrefs) * 100;
         Qs.push(Q);
       }
-      let mediaQ = Qs.reduce((sum, q) => sum + q, 0) / testes;
-      let desvioQ = Math.sqrt(Qs.reduce((sum, q) => sum + (q - mediaQ) ** 2, 0) / testes);
-      return { mediaQ, desvioQ };
+      let desvioQ = Math.sqrt(Qs.reduce((sum, q) => sum + (q - 50) ** 2, 0) / testes); // Usa média teórica 50
+      return { desvioQ };
     }
 
     // Gera dados para os gráficos
     function gerarDadosGraficos() {
-      const ns = [50, 200, 1256, 10000, 1000000]; // Inclui n=1000000 conforme teorema
-      let mediasQ = [], desviosQ = [], desviosQMega = [];
+      const ns = [50, 200, 1256, 10000, 1000000];
+      let mediasQ = [], desviosQ = [], desviosQMega = [], tamanhosGrupo = [];
       ns.forEach(n => {
         const { mediaQ, desvioQ } = simularDemocracia(n);
-        const { desvioQ: desvioQMega } = simularMegaVotos(n);
+        // Tamanho do grupo dinâmico, proporcional a n, mas evita grupos muito pequenos
+        const tamanhoGrupo = Math.max(50, Math.floor(n / 100));
+        const { desvioQ: desvioQMega } = simularMegaVotos(n, tamanhoGrupo);
         mediasQ.push(mediaQ);
         desviosQ.push(desvioQ);
         desviosQMega.push(desvioQMega);
+        tamanhosGrupo.push(tamanhoGrupo);
         console.log(
           `n=${n}, Q médio=${mediaQ.toFixed(2)}, Desvio Q=${desvioQ.toFixed(2)}, ` +
-          `Desvio Q (mega-votos)=${desvioQMega.toFixed(2)}`
+          `Desvio Q (mega-votos, grupo=${tamanhoGrupo})=${desvioQMega.toFixed(2)}`
         );
       });
-      return { ns, mediasQ, desviosQ, desviosQMega };
+      return { ns, mediasQ, desviosQ, desviosQMega, tamanhosGrupo };
     }
 
     // Plota os gráficos
     function plotarGraficos() {
-      const { ns, mediasQ, desviosQ, desviosQMega } = gerarDadosGraficos();
+      const { ns, mediasQ, desviosQ, desviosQMega, tamanhosGrupo } = gerarDadosGraficos();
 
       // Gráfico 1: Média de Q (Problema - votação direta)
       const ctx1 = canvasMediaQ.getContext('2d');
@@ -112,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
 
-      // Gráfico 2: Desvio de Q (Solução Megavotos - redução de entropia)
+      // Gráfico 2: Desvio de Q (Solução Megavotos - mitigação da entropia)
       const ctx2 = canvasDesvioQ.getContext('2d');
       new Chart(ctx2, {
         type: 'line',
@@ -120,7 +122,15 @@ document.addEventListener('DOMContentLoaded', function () {
           labels: ns,
           datasets: [
             { label: 'Desvio de Q (Votação Direta)', data: desviosQ, borderColor: 'red', fill: false },
-            { label: 'Desvio de Q (Mega-Votos, grupo=1256)', data: desviosQMega, borderColor: 'orange', fill: false }
+            { 
+              label: 'Desvio de Q (Mega-Votos)', 
+              data: desviosQMega, 
+              borderColor: 'orange', 
+              fill: false,
+              pointStyle: 'circle',
+              pointRadius: 5,
+              pointHoverRadius: 8
+            }
           ]
         },
         options: {
@@ -132,7 +142,18 @@ document.addEventListener('DOMContentLoaded', function () {
             y: { title: { display: true, text: 'Desvio de Q (Entropia)' }, min: 0 }
           },
           plugins: {
-            title: { display: true, text: 'Mitigação da Entropia: Mega-Votos (grupo=1256) vs. Votação Direta' }
+            title: { display: true, text: 'Mitigação da Entropia: Mega-Votos vs. Votação Direta' },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const index = context.dataIndex;
+                  const label = context.dataset.label;
+                  const value = context.parsed.y.toFixed(2);
+                  const tamanhoGrupo = tamanhosGrupo[index];
+                  return `${label}: ${value} (grupo=${tamanhoGrupo})`;
+                }
+              }
+            }
           }
         }
       });

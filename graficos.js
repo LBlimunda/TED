@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
     
 
-    function mediana(arr) {
+ let mediasQ = [], desviosQ = [];
+  function mediana(arr) {
         const sorted = arr.slice().sort((a, b) => a - b);
         const meio = Math.floor(sorted.length / 2);
         return sorted.length % 2 === 0 ? (sorted[meio - 1] + sorted[meio]) / 2 : sorted[meio];
@@ -23,7 +24,20 @@ document.addEventListener('DOMContentLoaded', function() {
         let desvioQ = Math.sqrt(Qs.reduce((sum, q) => sum + (q - mediaQ) ** 2, 0) / testes);
         return { mediaQ, desvioQ };
       }
-
+      function plotarGraficos() {
+        const { ns, mediasQ, desviosQ } = gerarDadosGraficosBase();
+        const ctx1 = document.getElementById('graficoMediaQ').getContext('2d');
+        new Chart(ctx1, {
+          type: 'line',
+          data: {
+            labels: ns,
+            datasets: [{ label: 'Média de Q', data: mediasQ, borderColor: 'blue', fill: false }]
+          },
+          options: {
+            scales: { x: { title: { display: true, text: 'Escala (n)' } }, y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 0, max: 100 } },
+            plugins: { title: { display: true, text: 'Convergência de Q no Teorema da Entropia Democrática' } }
+          }
+        });
       function gerarDadosGraficosBase() {
         //const ns = [50, 200, 1256, 10000, 1000000];
         const ns = [50, 200, 1256, 10000];
@@ -99,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         });
       
-        let mediasQ = [], desviosQ = [];
+        
         ns.forEach(n => {
           const { mediaQ, desvioQ } = simularDemocracia(n);
           mediasQ.push(mediaQ);
@@ -109,20 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return { ns, mediasQ, desviosQ };
       }
 
-      function plotarGraficos() {
-        const { ns, mediasQ, desviosQ } = gerarDadosGraficosBase();
-        const ctx1 = document.getElementById('graficoMediaQ').getContext('2d');
-        new Chart(ctx1, {
-          type: 'line',
-          data: {
-            labels: ns,
-            datasets: [{ label: 'Média de Q', data: mediasQ, borderColor: 'blue', fill: false }]
-          },
-          options: {
-            scales: { x: { title: { display: true, text: 'Escala (n)' } }, y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 0, max: 100 } },
-            plugins: { title: { display: true, text: 'Convergência de Q no Teorema da Entropia Democrática' } }
-          }
-        });
+      
 
 
 /*function gerarDadosGraficos() {

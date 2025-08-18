@@ -22,13 +22,21 @@ document.addEventListener('DOMContentLoaded', function () {
       return sorted.length % 2 === 0 ? (sorted[meio - 1] + sorted[meio]) / 2 : sorted[meio];
     }
 
+    // Gera número aleatório com distribuição normal (Box-Muller)
+    function normalRandom(mean = 0.5, stdDev = 0.2) {
+      const u1 = Math.random();
+      const u2 = Math.random();
+      const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+      return Math.max(0, Math.min(1, mean + stdDev * z)); // Limita a [0, 1]
+    }
+
     // Simula votação direta
     function simularDemocracia(n, testes = 1000) {
       let Qs = [];
       for (let i = 0; i < testes; i++) {
         let prefs = Array(n)
           .fill()
-          .map(() => Math.max(0, Math.min(1, 0.5 + 0.2 * (Math.random() - 0.5) * 2)));
+          .map(() => normalRandom(0.5, 0.2));
         let Q = mediana(prefs) * 100;
         Qs.push(Q);
       }
@@ -37,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return { mediaQ, desvioQ };
     }
 
-    // Simula votação com mega-votos
+    // Simula votação com mega-votos (tamanhoGrupo = 1256 como ponto de entropia)
     function simularMegaVotos(n, tamanhoGrupo = 1256, testes = 1000) {
       let Qs = [];
       const m = Math.ceil(n / tamanhoGrupo);
@@ -46,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
         for (let j = 0; j < m; j++) {
           let grupoPrefs = Array(Math.min(tamanhoGrupo, n - j * tamanhoGrupo))
             .fill()
-            .map(() => Math.max(0, Math.min(1, 0.5 + 0.2 * (Math.random() - 0.5) * 2)));
+            .map(() => normalRandom(0.5, 0.2));
           let pGrupo = mediana(grupoPrefs);
           megaPrefs.push(pGrupo);
         }
@@ -60,28 +68,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Gera dados para os gráficos
     function gerarDadosGraficos() {
-      const ns = [50, 200, 1256, 10000];
-      let mediasQ = [], desviosQ = [], mediasQMega = [], desviosQMega = [];
+      const ns = [50, 200, 1256, 10000, 1000000]; // Inclui n=1000000 conforme teorema
+      let mediasQ = [], desviosQ = [], desviosQMega = [];
       ns.forEach(n => {
         const { mediaQ, desvioQ } = simularDemocracia(n);
-        const { mediaQ: mediaQMega, desvioQ: desvioQMega } = simularMegaVotos(n);
+        const { desvioQ: desvioQMega } = simularMegaVotos(n);
         mediasQ.push(mediaQ);
         desviosQ.push(desvioQ);
-        mediasQMega.push(mediaQMega);
         desviosQMega.push(desvioQMega);
         console.log(
           `n=${n}, Q médio=${mediaQ.toFixed(2)}, Desvio Q=${desvioQ.toFixed(2)}, ` +
-          `Q médio (mega-votos)=${mediaQMega.toFixed(2)}, Desvio Q (mega-votos)=${desvioQMega.toFixed(2)}`
+          `Desvio Q (mega-votos)=${desvioQMega.toFixed(2)}`
         );
       });
-      return { ns, mediasQ, desviosQ, mediasQMega, desviosQMega };
+      return { ns, mediasQ, desviosQ, desviosQMega };
     }
 
     // Plota os gráficos
     function plotarGraficos() {
-      const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
+      const { ns, mediasQ, desviosQ, desviosQMega } = gerarDadosGraficos();
 
-      // Gráfico 1: Média de Q (apenas votação direta)
+      // Gráfico 1: Média de Q (Problema - votação direta)
       const ctx1 = canvasMediaQ.getContext('2d');
       new Chart(ctx1, {
         type: 'line',
@@ -100,12 +107,12 @@ document.addEventListener('DOMContentLoaded', function () {
             y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 0, max: 100 }
           },
           plugins: {
-            title: { display: true, text: 'Convergência de Q: Votação Direta' }
+            title: { display: true, text: 'Convergência para o MDC: Votação Direta' }
           }
         }
       });
 
-      // Gráfico 2: Desvio de Q (Solução Megavotos)
+      // Gráfico 2: Desvio de Q (Solução Megavotos - redução de entropia)
       const ctx2 = canvasDesvioQ.getContext('2d');
       new Chart(ctx2, {
         type: 'line',
@@ -113,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
           labels: ns,
           datasets: [
             { label: 'Desvio de Q (Votação Direta)', data: desviosQ, borderColor: 'red', fill: false },
-            { label: 'Desvio de Q (Mega-Votos)', data: desviosQMega, borderColor: 'orange', fill: false }
+            { label: 'Desvio de Q (Mega-Votos, grupo=1256)', data: desviosQMega, borderColor: 'orange', fill: false }
           ]
         },
         options: {
@@ -122,10 +129,10 @@ document.addEventListener('DOMContentLoaded', function () {
           maxHeight: 300, // Mantido conforme original, mas ignorado pelo Chart.js
           scales: {
             x: { title: { display: true, text: 'Escala (n)' } },
-            y: { title: { display: true, text: 'Desvio de Q' }, min: 0 }
+            y: { title: { display: true, text: 'Desvio de Q (Entropia)' }, min: 0 }
           },
           plugins: {
-            title: { display: true, text: 'Variabilidade de Q: Votação Direta vs. Mega-Votos' }
+            title: { display: true, text: 'Mitigação da Entropia: Mega-Votos (grupo=1256) vs. Votação Direta' }
           }
         }
       });

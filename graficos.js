@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Simula votação direta
-    function simularDemocracia(n, testes = 1000) {
+    function simularDemocracia(n, testes = 100) {
       let Qs = [];
       for (let i = 0; i < testes; i++) {
         let prefs = Array(n)
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Simula votação com mega-votos
-    function simularMegaVotos(n, tamanhoGrupo, testes = 1000) {
+    function simularMegaVotos(n, tamanhoGrupo, testes = 100) {
       let Qs = [];
       const m = Math.ceil(n / tamanhoGrupo);
       for (let i = 0; i < testes; i++) {
@@ -67,12 +67,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Gera dados para os gráficos
     function gerarDadosGraficos() {
-      const ns = [50, 200, 1256, 10000, 100000];
+      const ns = [50, 200, 1256, 10000];
       let mediasQ = [], desviosQ = [], desviosQMega = [], tamanhosGrupo = [];
       ns.forEach(n => {
         const { mediaQ, desvioQ } = simularDemocracia(n);
         // Tamanho do grupo dinâmico, próximo ao ponto de ruptura, mas limitado
-        const tamanhoGrupo = Math.min(n, 1000);
+        const tamanhoGrupo = Math.min(n, 100);
         const { desvioQ: desvioQMega } = simularMegaVotos(n, tamanhoGrupo);
         mediasQ.push(mediaQ);
         desviosQ.push(desvioQ);

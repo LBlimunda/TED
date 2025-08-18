@@ -107,10 +107,10 @@ document.addEventListener('DOMContentLoaded', function () {
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          maxHeight: 200, // Mantido, mas ignorado pelo Chart.js
+          maxHeight: 300, // Mantido, mas ignorado pelo Chart.js
           scales: {
             x: { title: { display: true, text: 'Escala (n)' } },
-            y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 30, max: 70 }
+            y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 45, max: 60 }
           },
           plugins: {
             title: { display: true, text: 'Convergência para o MDC: Votação Direta' }
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
           maxHeight: 300, // Mantido, mas ignorado pelo Chart.js
           scales: {
             x: { title: { display: true, text: 'Escala (n)' } },
-            y: { title: { display: true, text: 'Desvio de Q (Entropia)' }, min: 0, max: 10 }
+            y: { title: { display: true, text: 'Desvio de Q (Entropia)' }, min: 0, max: 5 }
           },
           plugins: {
             title: { display: true, text: 'Mitigação da Entropia: Mega-Votos vs. Votação Direta' },

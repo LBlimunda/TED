@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
         
 
-        const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
+       /* const { ns, mediasQ, desviosQ, mediasQMega, desviosQMega } = gerarDadosGraficos();
         const ctx1 = document.getElementById('graficoMediaQ').getContext('2d');
         new Chart(ctx1, {
           type: 'line',
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: { title: { display: true, text: 'Convergência de Q: Votação Direta vs. Mega-Votos' } }
           }
         });
-
+*/
         const ctx2 = document.getElementById('graficoDesvioQ').getContext('2d');
         new Chart(ctx2, {
           type: 'line',

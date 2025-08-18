@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -22,13 +21,16 @@
     <h2>Teorema da Qualidade de Vida</h2>
     <p>Fórmulas:</p>
     <p>
-        1. Original: \[ Q_n = 100 \cdot \text{med}(p_1, p_2, \dots, p_n), \quad \sigma(Q_n) = 100 \cdot \sqrt{\frac{0.1256}{n}}, \quad \forall n \geq 1256 \]
+        1. Agrupamento: \[ Q_n = 100 \cdot \text{med}(m_j), \quad m_j = \text{med}(p_{j1}, \dots, p_{jg}), \quad g = \min(n, 1000), \quad m = \lceil n / g \rceil, \quad \sigma(Q_n) = \frac{50}{f(\mu) \sqrt{m}} \]
     </p>
     <p>
-        2. Agrupamento: \[ Q_n = 100 \cdot \text{med}(m_j), \quad m_j = \text{med}(p_{j1}, \dots, p_{jg}), \quad g = \min(n, 1000), \quad m = \lceil n / g \rceil, \quad \sigma(Q_n) = \sqrt{\frac{m}{50}} \]
-    </p>
-    <p>
-        3. Reformulada: \[ Q_n = 100 \cdot \text{med}(p_1, p_2, \dots, p_n), \quad \sigma(Q_n) = \frac{50}{f(\mu) \sqrt{n}} \]
+        2. Reformulada: \[ Q_n = 100 \cdot \text{med}(p_1, p_2, \dots, p_n), \quad \sigma(Q_n) = \frac{50}{f(\mu) \sqrt{n}} \]
+    </p><p>
+        Q<sub>n</sub> = 100 &cdot; med(p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>n</sub>), 
+        &sigma;(Q<sub>n</sub>) = 50 / (f(&mu;) &radic;n)
+    </p><p>
+        Q<sub>n</sub> = 100 &cdot; med(p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>n</sub>), 
+        &sigma;(Q<sub>n</sub>) = 50 / (f(&mu;) &radic;n)
     </p>
     <h3>Simulação</h3>
     <p>Distribuição: <select id="distribution">
@@ -90,9 +92,9 @@
                 : () => betaRandom(2, 2, n);
 
             // Calcula f(μ)
-            const fMu = dist === 'uniform' ? 1.0 : 1.5;
+            const fMu = dist === 'uniform' ? 1.0 : 1.5; // Beta(2,2) tem f(0.5) ≈ 1.5
 
-            // Simula Q_n (Fórmula 1: Original)
+            // Simula Q_n (Fórmula Reformulada)
             const Qn1Values = [];
             for (let i = 0; i < nSim; i++) {
                 const data = generateData();
@@ -100,10 +102,10 @@
             }
             const Qn1Mean = Qn1Values.reduce((sum, x) => sum + x, 0) / nSim;
             const sigmaQn1Empirical = Math.sqrt(Qn1Values.reduce((sum, x) => sum + (x - Qn1Mean) ** 2, 0) / (nSim - 1));
-            const sigmaQn1Theoretical = n >= 1256 ? 100 * Math.sqrt(0.1256 / n) : 'N/A (n < 1256)';
-            const rupturePoint1 = n >= 1256 ? 1256 : 'N/A';
+            const sigmaQn1Theoretical = 50 / (fMu * Math.sqrt(n));
+            const rupturePoint1 = Math.ceil((50 / fMu) ** 2);
 
-            // Simula Q_n (Fórmula 2: Agrupamento)
+            // Simula Q_n (Fórmula Agrupamento)
             const Qn2Values = [];
             const g = Math.min(n, 1000);
             const m = Math.ceil(n / g);
@@ -119,33 +121,21 @@
             }
             const Qn2Mean = Qn2Values.reduce((sum, x) => sum + x, 0) / nSim;
             const sigmaQn2Empirical = Math.sqrt(Qn2Values.reduce((sum, x) => sum + (x - Qn2Mean) ** 2, 0) / (nSim - 1));
-            const sigmaQn2Theoretical = Math.sqrt(m / 50);
-            const rupturePoint2 = Math.ceil(50 * 50); // m ≤ 50 → n ≤ 50 * g = 50000
-
-            // Simula Q_n (Fórmula Reformulada)
-            const Qn3Values = Qn1Values; // Mesma mediana da Fórmula 1
-            const Qn3Mean = Qn1Mean;
-            const sigmaQn3Empirical = sigmaQn1Empirical;
-            const sigmaQn3Theoretical = 50 / (fMu * Math.sqrt(n));
-            const rupturePoint3 = Math.ceil((50 / fMu) ** 2);
+            const sigmaQn2Theoretical = 50 / (fMu * Math.sqrt(m));
+            const rupturePoint2 = Math.ceil(((50 / fMu) ** 2) * g);
 
             // Exibe resultados
             document.getElementById('results').innerHTML = `
-                <strong>Fórmula 1 (Original):</strong><br>
+                <strong>Fórmula Reformulada:</strong><br>
                 Q_n médio: ${Qn1Mean.toFixed(2)}<br>
-                σ(Q_n) teórico: ${typeof sigmaQn1Theoretical === 'number' ? sigmaQn1Theoretical.toFixed(2) : sigmaQn1Theoretical}<br>
+                σ(Q_n) teórico: ${sigmaQn1Theoretical.toFixed(2)}<br>
                 σ(Q_n) empírico: ${sigmaQn1Empirical.toFixed(2)}<br>
                 Ponto de ruptura: ${rupturePoint1}<br><br>
-                <strong>Fórmula 2 (Agrupamento):</strong><br>
+                <strong>Fórmula Agrupamento:</strong><br>
                 Q_n médio: ${Qn2Mean.toFixed(2)}<br>
                 σ(Q_n) teórico: ${sigmaQn2Theoretical.toFixed(2)}<br>
                 σ(Q_n) empírico: ${sigmaQn2Empirical.toFixed(2)}<br>
-                Ponto de ruptura: ${rupturePoint2}<br><br>
-                <strong>Fórmula Reformulada:</strong><br>
-                Q_n médio: ${Qn3Mean.toFixed(2)}<br>
-                σ(Q_n) teórico: ${sigmaQn3Theoretical.toFixed(2)}<br>
-                σ(Q_n) empírico: ${sigmaQn3Empirical.toFixed(2)}<br>
-                Ponto de ruptura: ${rupturePoint3}
+                Ponto de ruptura: ${rupturePoint2}
             `;
 
             // Histograma de Q_n
@@ -154,7 +144,7 @@
                 type: 'histogram',
                 data: {
                     datasets: [
-                        { label: 'Q_n (Original)', data: Qn1Values.map(x => ({ x, y: 1 })), backgroundColor: 'rgba(75, 192, 192, 0.5)', borderColor: 'rgba(75, 192, 192, 1)', borderWidth: 1 },
+                        { label: 'Q_n (Reformulada)', data: Qn1Values.map(x => ({ x, y: 1 })), backgroundColor: 'rgba(75, 192, 192, 0.5)', borderColor: 'rgba(75, 192, 192, 1)', borderWidth: 1 },
                         { label: 'Q_n (Agrupamento)', data: Qn2Values.map(x => ({ x, y: 1 })), backgroundColor: 'rgba(255, 99, 132, 0.5)', borderColor: 'rgba(255, 99, 132, 1)', borderWidth: 1 }
                     ]
                 },
@@ -168,21 +158,19 @@
 
             // Gráfico de σ(Q_n) vs. n
             const nValues = Array.from({ length: 10 }, (_, i) => 500 + i * 1000);
-            const sigma1Values = nValues.map(n => n >= 1256 ? 100 * Math.sqrt(0.1256 / n) : null);
+            const sigma1Values = nValues.map(n => 50 / (fMu * Math.sqrt(n)));
             const sigma2Values = nValues.map(n => {
                 const m = Math.ceil(n / Math.min(n, 1000));
-                return Math.sqrt(m / 50);
+                return 50 / (fMu * Math.sqrt(m));
             });
-            const sigma3Values = nValues.map(n => 50 / (fMu * Math.sqrt(n)));
             const sigmaCtx = document.getElementById('sigmaChart').getContext('2d');
             new Chart(sigmaCtx, {
                 type: 'line',
                 data: {
                     labels: nValues,
                     datasets: [
-                        { label: 'σ(Q_n) Original', data: sigma1Values, borderColor: 'rgba(75, 192, 192, 1)', fill: false },
+                        { label: 'σ(Q_n) Reformulada', data: sigma1Values, borderColor: 'rgba(75, 192, 192, 1)', fill: false },
                         { label: 'σ(Q_n) Agrupamento', data: sigma2Values, borderColor: 'rgba(255, 99, 132, 1)', fill: false },
-                        { label: 'σ(Q_n) Reformulada', data: sigma3Values, borderColor: 'rgba(54, 162, 235, 1)', fill: false },
                         { label: 'Limiar (σ = 1)', data: Array(nValues.length).fill(1), borderColor: 'rgba(0, 0, 0, 0.5)', borderDash: [5, 5] }
                     ]
                 },
@@ -194,6 +182,6 @@
                 }
             });
         }
-    </script>
+    </script>  <p class="license">© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob CC BY-SA 4.0. Cite a autora em qualquer uso. 
 </body>
 </html>

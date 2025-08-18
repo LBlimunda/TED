@@ -11,30 +11,29 @@
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
         .canvas-panel { border: 1px solid #ccc; padding: 10px; margin: 20px 0; }
-        canvas { max-width: 100%; height:300px}
+        canvas { max-width: 100%; height: 300px; }
         .tabs { margin-bottom: 10px; }
         .tab-button { padding: 5px 10px; cursor: pointer; }
         .tab-button.active { background-color: #4CAF50; color: white; }
+        .old-school { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 10px; border: 1px solid #999; }
     </style>
 </head>
 <body>
     <h2>Teorema da Qualidade de Vida</h2>
-    <p>Fórmulas:</p>
+    <p>Fórmulas (LaTeX):</p>
     <p>
-        1. Agrupamento: \[ Q_n = 100 \cdot \text{med}(m_j), \quad m_j = \text{med}(p_{j1}, \dots, p_{jg}), \quad g = \min(n, 1000), \quad m = \lceil n / g \rceil, \quad \sigma(Q_n) = \frac{50}{f(\mu) \sqrt{m}} \]
+        1. Agrupamento: \[ Q_n = 100 \cdot \text{med}(m_j), \quad m_j = \text{med}(p_{j1}, \dots, p_{jg}), \quad g = \min(n, 1000), \quad m = \lceil n / g \rceil, \quad \sigma(Q_n) = \frac{50}{f(\mu) \sqrt{n}} \]
     </p>
     <p>
         2. Reformulada: \[ Q_n = 100 \cdot \text{med}(p_1, p_2, \dots, p_n), \quad \sigma(Q_n) = \frac{50}{f(\mu) \sqrt{n}} \]
-    </p><p>
-        Q<sub>n</sub> = 100 &cdot; med(p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>n</sub>), 
-        &sigma;(Q<sub>n</sub>) = 50 / (f(&mu;) &radic;n)
-    </p><p>
-        Q<sub>n</sub> = 100 &cdot; med(p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>n</sub>), 
-        &sigma;(Q<sub>n</sub>) = 50 / (f(&mu;) &radic;n)
+    </p>
+    <p class="old-school">Fórmulas (Old School):<br>
+        1. Agrupamento: Q<sub>n</sub> = 100 &times; med(m<sub>j</sub>), m<sub>j</sub> = med(p<sub>j1</sub>, ..., p<sub>jg</sub>), g = min(n, 1000), m = &lceil;n / g&rceil;, &sigma;(Q<sub>n</sub>) = 50 / (f(&mu;) &radic;n)<br>
+        2. Reformulada: Q<sub>n</sub> = 100 &times; med(p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>n</sub>), &sigma;(Q<sub>n</sub>) = 50 / (f(&mu;) &radic;n)
     </p>
     <h3>Simulação</h3>
     <p>Distribuição: <select id="distribution">
-        <option value="uniform">Uniforme [0, 1]</option>
+        <option value="uniform" selected>Uniforme [0, 1]</option>
         <option value="beta">Beta(2, 2)</option>
     </select></p>
     <p>Número de votantes (n): <input type="number" id="nVoters" value="2000" min="100" max="10000"></p>
@@ -51,6 +50,7 @@
         <canvas id="qnChart" style="display: block;"></canvas>
         <canvas id="sigmaChart" style="display: none;"></canvas>
     </div>
+    <p class="license">© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob CC BY-SA 4.0. Cite a autora em qualquer uso.</p>
 
     <script>
         // Função para calcular a mediana
@@ -103,7 +103,7 @@
             const Qn1Mean = Qn1Values.reduce((sum, x) => sum + x, 0) / nSim;
             const sigmaQn1Empirical = Math.sqrt(Qn1Values.reduce((sum, x) => sum + (x - Qn1Mean) ** 2, 0) / (nSim - 1));
             const sigmaQn1Theoretical = 50 / (fMu * Math.sqrt(n));
-            const rupturePoint1 = Math.ceil((50 / fMu) ** 2);
+            const rupturePoint = Math.ceil((50 / fMu) ** 2);
 
             // Simula Q_n (Fórmula Agrupamento)
             const Qn2Values = [];
@@ -121,8 +121,7 @@
             }
             const Qn2Mean = Qn2Values.reduce((sum, x) => sum + x, 0) / nSim;
             const sigmaQn2Empirical = Math.sqrt(Qn2Values.reduce((sum, x) => sum + (x - Qn2Mean) ** 2, 0) / (nSim - 1));
-            const sigmaQn2Theoretical = 50 / (fMu * Math.sqrt(m));
-            const rupturePoint2 = Math.ceil(((50 / fMu) ** 2) * g);
+            const sigmaQn2Theoretical = 50 / (fMu * Math.sqrt(n)); // Mesmo σ que a reformulada
 
             // Exibe resultados
             document.getElementById('results').innerHTML = `
@@ -130,12 +129,12 @@
                 Q_n médio: ${Qn1Mean.toFixed(2)}<br>
                 σ(Q_n) teórico: ${sigmaQn1Theoretical.toFixed(2)}<br>
                 σ(Q_n) empírico: ${sigmaQn1Empirical.toFixed(2)}<br>
-                Ponto de ruptura: ${rupturePoint1}<br><br>
+                Ponto de ruptura: ${rupturePoint}<br><br>
                 <strong>Fórmula Agrupamento:</strong><br>
                 Q_n médio: ${Qn2Mean.toFixed(2)}<br>
                 σ(Q_n) teórico: ${sigmaQn2Theoretical.toFixed(2)}<br>
                 σ(Q_n) empírico: ${sigmaQn2Empirical.toFixed(2)}<br>
-                Ponto de ruptura: ${rupturePoint2}
+                Ponto de ruptura: ${rupturePoint}
             `;
 
             // Histograma de Q_n
@@ -158,19 +157,14 @@
 
             // Gráfico de σ(Q_n) vs. n
             const nValues = Array.from({ length: 10 }, (_, i) => 500 + i * 1000);
-            const sigma1Values = nValues.map(n => 50 / (fMu * Math.sqrt(n)));
-            const sigma2Values = nValues.map(n => {
-                const m = Math.ceil(n / Math.min(n, 1000));
-                return 50 / (fMu * Math.sqrt(m));
-            });
+            const sigmaValues = nValues.map(n => 50 / (fMu * Math.sqrt(n)));
             const sigmaCtx = document.getElementById('sigmaChart').getContext('2d');
             new Chart(sigmaCtx, {
                 type: 'line',
                 data: {
                     labels: nValues,
                     datasets: [
-                        { label: 'σ(Q_n) Reformulada', data: sigma1Values, borderColor: 'rgba(75, 192, 192, 1)', fill: false },
-                        { label: 'σ(Q_n) Agrupamento', data: sigma2Values, borderColor: 'rgba(255, 99, 132, 1)', fill: false },
+                        { label: 'σ(Q_n) (Ambas)', data: sigmaValues, borderColor: 'rgba(75, 192, 192, 1)', fill: false },
                         { label: 'Limiar (σ = 1)', data: Array(nValues.length).fill(1), borderColor: 'rgba(0, 0, 0, 0.5)', borderDash: [5, 5] }
                     ]
                 },
@@ -182,6 +176,11 @@
                 }
             });
         }
-    </script>  <p class="license">© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob CC BY-SA 4.0. Cite a autora em qualquer uso. 
+
+        // Executa a simulação no carregamento da página
+        window.onload = function() {
+            runSimulation();
+        };
+    </script>
 </body>
 </html>

@@ -84,7 +84,9 @@ document.addEventListener('DOMContentLoaded', function () {
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          maxHeight: 400, // Força a altura máxima do gráfico em pixels
           scales: {
+        
             x: { title: { display: true, text: 'Escala (n)' } },
             y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 0, max: 100 }
           },
@@ -108,6 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          maxHeight: 400, // Força a altura máxima do gráfico em pixels
           scales: {
             x: { title: { display: true, text: 'Escala (n)' } },
             y: { title: { display: true, text: 'Desvio de Q' }, min: 0 }

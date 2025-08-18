@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
         data: {
           labels: ns,
           datasets: [
-            { label: 'Média de Q (Votação Direta)', data: mediasQ, borderColor: 'blue', fill: false }
+            { label: 'Média de Q (Votação Direta)', data: mediasQ, borderColor: 'pink', fill: false }
           ]
         },
         options: {

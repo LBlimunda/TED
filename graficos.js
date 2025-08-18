@@ -1,14 +1,12 @@
+// Copyright (c) Lara Raquel Rodrigues Branco Arsénio, 2025
+// Licensed under CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/
+// Inclui Chart.js (MIT License): https://github.com/chartjs/Chart.js/blob/master/LICENSE
 
-
-      // Copyright (c) Lara Raquel Rodrigues Branco Arsénio, 2025
-      // Licensed under CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/
-      // Inclui Chart.js (MIT License): https://github.com/chartjs/Chart.js/blob/master/LICENSE
-
-      function mediana(arr) {
+function mediana(arr) {
         const sorted = arr.slice().sort((a, b) => a - b);
         const meio = Math.floor(sorted.length / 2);
         return sorted.length % 2 === 0 ? (sorted[meio - 1] + sorted[meio]) / 2 : sorted[meio];
-      }
+}
 
       function simularDemocracia(n, testes = 1000) {
         let Qs = [];

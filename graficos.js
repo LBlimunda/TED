@@ -31,22 +31,13 @@ document.addEventListener('DOMContentLoaded', function () {
             pointRadius: 4,
             borderWidth: 2,
             fill: false
-          },
-          {
-            label: 'Média Q (Mega-Votos)',
-            data: mediasQMega,
-            borderColor: '#32CD32', // Verde
-            backgroundColor: '#32CD32',
-            pointRadius: 4,
-            borderWidth: 2,
-            fill: false
           }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        maxHeight: 400, // Fixa a altura máxima em 200px
+        maxHeight: 200, // Fixa a altura em 200px
         scales: {
           x: {
             title: { display: true, text: 'Escala (n)', font: { size: 12 } },
@@ -56,17 +47,17 @@ document.addEventListener('DOMContentLoaded', function () {
             title: { display: true, text: 'Média de Q', font: { size: 12 } },
             ticks: {
               font: { size: 10 },
-              stepSize: 0.1, // Ticks finos para convergência
+              stepSize: 0.1, // Ticks finos para mostrar convergência
               precision: 1
             },
-            min: Math.min(0, Math.min(...mediasQ, ...mediasQMega) * 0.95),
-            max: Math.max(1, Math.max(...mediasQ, ...mediasQMega) * 1.05)
+            min: Math.min(0, Math.min(...mediasQ) * 0.95), // Inclui 0 e ajusta aos dados
+            max: Math.max(1, Math.max(...mediasQ) * 1.05) // Inclui 1 e ajusta aos dados
           }
         },
         plugins: {
           title: {
             display: true,
-            text: 'Parte 1: Convergência para Mediana (Estagnação)',
+            text: 'Parte 1: Convergência para a Mediana (Estagnação)',
             font: { size: 14 },
             padding: 8
           },
@@ -88,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
-    // Gráfico 2: Desvio de Q (Parte 2 - Solução com Mega-Votos)
+    // Gráfico 2: Desvio de Q (mantido como no código original, sem Mega-Votos)
     new Chart(ctx2.getContext('2d'), {
       type: 'line',
       data: {
@@ -117,11 +108,11 @@ document.addEventListener('DOMContentLoaded', function () {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        maxHeight: 400, // Fixa a altura máxima em 200px
+        maxHeight: 200, // Fixa a altura em 200px
         scales: {
           x: {
             title: { display: true, text: 'Escala (n)', font: { size: 12 } },
-            ticks: { font: { size: 10 } }
+            ticks: { font: { size: 12 } }
           },
           y: {
             title: { display: true, text: 'Desvio de Q', font: { size: 12 } },
@@ -138,19 +129,12 @@ document.addEventListener('DOMContentLoaded', function () {
           title: {
             display: true,
             text: 'Parte 2: Mega-Votos Preservam Variabilidade',
-            font: { size: summersize: 14 },
+            font: { size: 14 },
             padding: 8
           },
           legend: {
             position: 'top',
             labels: { font: { size: 10 }, boxWidth: 20 }
-          },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                return `${context.dataset.label}: ${context.parsed.y.toFixed(2)}`;
-              }
-            }
           }
         },
         layout: {
@@ -163,3 +147,5 @@ document.addEventListener('DOMContentLoaded', function () {
   // Chama a função após o DOM estar carregado
   plotarGraficos();
 });
+            
+

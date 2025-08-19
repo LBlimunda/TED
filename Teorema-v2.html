@@ -10,11 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .canvas-panel { border: 1px solid #ccc; padding: 10px; margin: 20px 0; }
         canvas { max-width: 100%; max-height: 300px; }
-        .tabs { margin-bottom: 10px; }
-        .tab-button { padding: 5px 10px; cursor: pointer; }
-        .tab-button.active { background-color: #4CAF50; color: white; }
         .old-school { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 10px; border: 1px solid #999; }
     </style>
 </head>
@@ -41,15 +37,9 @@
     <button onclick="runSimulation()">Simular</button>
     <h3>Resultados</h3>
     <p id="results"></p>
-    <h3>Visualização (Canvas Separado)</h3>
-    <div class="canvas-panel">
-        <div class="tabs">
-            <button class="tab-button active" onclick="showChart('graficoMediaQ')">Convergência para o MDC</button>
-            <button class="tab-button" onclick="showChart('graficoDesvioQ')">Mitigação da Entropia</button>
-        </div>
-        <canvas id="graficoMediaQ" style="display: block;"></canvas>
-        <canvas id="graficoDesvioQ" style="display: none;"></canvas>
-    </div>
+    <h3>Visualização</h3>
+    <canvas id="graficoMediaQ"></canvas>
+    <canvas id="graficoDesvioQ"></canvas>
     <p class="license">© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob CC BY-SA 4.0. Cite a autora em qualquer uso.</p>
 
     <script>
@@ -78,15 +68,6 @@
                         for (let i = 0; i < alpha; i++) x += Math.random();
                         for (let i = 0; i < beta; i++) x += Math.random();
                         return x / (alpha + beta);
-                    });
-                }
-
-                // Alternar entre gráficos
-                function showChart(activeId) {
-                    document.getElementById('graficoMediaQ').style.display = activeId === 'graficoMediaQ' ? 'block' : 'none';
-                    document.getElementById('graficoDesvioQ').style.display = activeId === 'graficoDesvioQ' ? 'block' : 'none';
-                    document.querySelectorAll('.tab-button').forEach(btn => {
-                        btn.classList.toggle('active', btn.onclick.toString().includes(activeId));
                     });
                 }
 
@@ -150,7 +131,7 @@
                         const { desvioQ: desvioQMega } = simularMegaVotos(n, tamanhoGrupo, testes);
                         mediasQ.push(mediaQ);
                         desviosQ.push(desvioQTeorico);
-                        desviosQMega.push(desvioQTeorico); // Mesmo desvio teórico
+                        desviosQMega.push(desvioQTeorico);
                         tamanhosGrupo.push(tamanhoGrupo);
                         console.log(`n=${n}, Q médio=${mediaQ.toFixed(2)}, Desvio Q=${desvioQTeorico.toFixed(2)}, Desvio Q (mega-votos, grupo=${tamanhoGrupo})=${desvioQTeorico.toFixed(2)}`);
                     });
@@ -190,7 +171,7 @@
                     // Gera gráficos
                     const { ns, mediasQ, desviosQ, desviosQMega, tamanhosGrupo, rupturePoint } = gerarDadosGraficos();
 
-                    const ctx1 = document.getElementById('graficoMediaQ').getContext('2d');
+                    const ctx1 = canvasMediaQ.getContext('2d');
                     new Chart(ctx1, {
                         type: 'line',
                         data: {
@@ -231,7 +212,7 @@
                         }
                     });
 
-                    const ctx2 = document.getElementById('graficoDesvioQ').getContext('2d');
+                    const ctx2 = canvasDesvioQ.getContext('2d');
                     new Chart(ctx2, {
                         type: 'line',
                         data: {

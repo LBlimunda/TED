@@ -44,7 +44,7 @@ function generateNormalCurve(mean, stdDev, minX, maxX, numPoints) {
     return { x: xValues, y: yValues };
 }
 
-// Função principal (mantida idêntica ao original, exceto pela fórmula)
+// Função principal (mantida idêntica ao original, exceto pela fórmula e entropia dinâmica)
 window.onload = function() {
     const n = parseInt(document.getElementById('sampleSize').value) || 100;
     const mu = parseFloat(document.getElementById('populationProp').value) || 0.5;
@@ -69,6 +69,7 @@ window.onload = function() {
     const varianceQn = qnValues.reduce((a, b) => a + Math.pow(b - meanQn, 2), 0) / numSims;
     const stdDevQn = Math.sqrt(varianceQn);
     const theoreticalStdDev = 50 / (fMu(mu) * Math.sqrt(n));
+    const relativeError = Math.abs(stdDevQn - theoreticalStdDev) / theoreticalStdDev * 100;
 
     // Atualizar resultados
     document.getElementById('result').innerHTML = `
@@ -76,7 +77,7 @@ window.onload = function() {
         Média de Q_n: ${meanQn.toFixed(2)}<br>
         Desvio Padrão Simulado: ${stdDevQn.toFixed(2)}<br>
         Desvio Padrão Teórico: ${theoreticalStdDev.toFixed(2)}<br>
-        Erro Relativo: ${((stdDevQn - theoreticalStdDev) / theoreticalStdDev * 100).toFixed(2)}%
+        Erro Relativo: ${relativeError.toFixed(2)}%
     `;
 
     // Atualizar Histograma (idêntico ao original)

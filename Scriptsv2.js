@@ -38,8 +38,11 @@ function createHistogramData(values, binSize) {
 // Função para gerar pontos da curva normal
 function generateNormalCurve(mean, stdDev, minX, maxX, numPoints) {
     const step = (maxX - minX) / (numPoints - 1);
-    const xValues = Array.from({length: numPoints}, (_, i) => minX + i * step);
-    const yValues = xValues.map(x => (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2)));
+    const xValues = Array.from({ length: numPoints }, (_, i) => minX + i * step);
+    const yValues = xValues.map(
+        x => (1 / (stdDev * Math.sqrt(2 * Math.PI))) *
+             Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2))
+    );
     return { x: xValues, y: yValues };
 }
 
@@ -79,7 +82,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const varianceQn = qnValues.reduce((a, b) => a + Math.pow(b - meanQn, 2), 0) / numSims;
     const stdDevQn = Math.sqrt(varianceQn);
     const theoreticalStdDev = 50 / (fMu(mu) * Math.sqrt(n));
-    const relativeError = theoreticalStdDev > 0 ? Math.abs(stdDevQn - theoreticalStdDev) / theoreticalStdDev * 100 : 0;
+    const relativeError = theoreticalStdDev > 0
+        ? Math.abs(stdDevQn - theoreticalStdDev) / theoreticalStdDev * 100
+        : 0;
 
     // Atualizar resultados
     document.getElementById('result').innerHTML = `
@@ -94,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const histogramCtx = histogramCanvas.getContext('2d');
     if (histogramChart) histogramChart.destroy();
     const histData = {
-        labels: Array.from({length: 20}, (_, i) => i * 5), // Bins de 0 a 95
+        labels: Array.from({ length: 20 }, (_, i) => i * 5), // Bins de 0 a 95
         datasets: [{
             label: 'Distribuição de Q_n',
             data: createHistogramData(qnValues, 5),
@@ -106,8 +111,8 @@ document.addEventListener('DOMContentLoaded', function() {
     histogramChart = new Chart(histogramCtx, {
         type: 'bar',
         data: histData,
-        options: { 
-            scales: { 
+        options: {
+            scales: {
                 y: { beginAtZero: true },
                 x: { title: { display: true, text: 'Q_n' } }
             }
@@ -119,10 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (normalChart) normalChart.destroy();
     const normalCurve = generateNormalCurve(100 * mu, theoreticalStdDev, 0, 100, 100);
     const normalData = {
-        labels: normalCurve.x,
         datasets: [{
             label: 'Distribuição Normal Teórica',
-            data: normalCurve.y,
+            data: normalCurve.x.map((x, i) => ({ x, y: normalCurve.y[i] })),
             borderColor: 'rgba(255, 99, 132, 1)',
             backgroundColor: 'rgba(255, 99, 132, 0.2)',
             fill: true,
@@ -132,10 +136,10 @@ document.addEventListener('DOMContentLoaded', function() {
     normalChart = new Chart(normalCtx, {
         type: 'line',
         data: normalData,
-        options: { 
-            scales: { 
-                y: { beginAtZero: true },
-                x: { title: { display: true, text: 'Q_n' } }
+        options: {
+            scales: {
+                x: { type: 'linear', title: { display: true, text: 'Q_n' } },
+                y: { beginAtZero: true }
             }
         }
     });

@@ -159,6 +159,43 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 });
+// === cálculo Ncrit ===
+(function(){
+    // cria um div para mostrar resultados, se ainda não existir
+    let outputDiv = document.getElementById('ncrit-output');
+    if (!outputDiv) {
+        outputDiv = document.createElement('div');
+        outputDiv.id = 'ncrit-output';
+        outputDiv.style.background = "#ecf0f1";
+        outputDiv.style.padding = "10px";
+        outputDiv.style.borderLeft = "5px solid #3498db";
+        outputDiv.style.margin = "20px 0";
+        outputDiv.style.fontFamily = "monospace";
+        document.body.appendChild(outputDiv);
+    }
+
+    // parâmetros do modelo
+    const f_mu = 0.8;       // densidade na mediana
+    const targetSD = 1;     // critério de entropia absoluta
+    const nCrit = Math.ceil(Math.pow(50/(f_mu*targetSD),2));
+
+    const sampleSizesCrit = [100, 5000, 20000, 100000];
+
+    let html = "";
+    html += "<p><strong>Fórmula:</strong> σ(Q<sub>n</sub>) = 50 / ( f(μ) · √n )</p>";
+    html += "<p><strong>Condição:</strong> σ(Q<sub>n</sub>) ≤ 1</p>";
+    html += `<p><strong>Ponto crítico:</strong> N<sub>crit</sub> = ${nCrit}</p>`;
+    html += "<p><u>Comparação com os n simulados:</u></p><ul>";
+
+    sampleSizesCrit.forEach(n => {
+        const sd = 50 / (f_mu * Math.sqrt(n));
+        html += `<li>n = ${n}: σ(Q<sub>n</sub>) ≈ ${sd.toFixed(2)}</li>`;
+    });
+    html += "</ul>";
+
+    outputDiv.innerHTML = html;
+})();
+
 </script>
 
 

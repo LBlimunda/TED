@@ -27,13 +27,12 @@ function fMu(mu) {
 
 // Função para criar dados do histograma
 function createHistogramData(values, binSize) {
-    const bins = {};
+    const bins = Array(20).fill(0); // 20 bins de 0 a 100
     values.forEach(val => {
-        const bin = Math.floor(val / binSize) * binSize;
-        bins[bin] = (bins[bin] || 0) + 1;
+        const binIndex = Math.min(Math.floor(val / binSize), 19); // Evita overflow
+        bins[binIndex]++;
     });
-    const sortedBins = Object.keys(bins).sort((a, b) => a - b).map(Number);
-    return sortedBins.map(bin => bins[bin] || 0);
+    return bins;
 }
 
 // Função para gerar pontos da curva normal
@@ -44,7 +43,7 @@ function generateNormalCurve(mean, stdDev, minX, maxX, numPoints) {
     return { x: xValues, y: yValues };
 }
 
-// Função principal (mantida idêntica ao original, exceto pela fórmula e entropia dinâmica)
+// Função principal (idêntica ao original, com fórmula ajustada)
 window.onload = function() {
     const n = parseInt(document.getElementById('sampleSize').value) || 100;
     const mu = parseFloat(document.getElementById('populationProp').value) || 0.5;
@@ -55,7 +54,6 @@ window.onload = function() {
     for (let i = 0; i < numSims; i++) {
         let props = [];
         for (let j = 0; j < n; j++) {
-            // Gerar preferência p_i com distribuição normal (média 0.5, desvio 0.2)
             let pi = randomNormal(0.5, 0.2);
             pi = Math.min(Math.max(pi, 0), 1); // Limitar a [0, 1]
             props.push(pi);
@@ -69,7 +67,7 @@ window.onload = function() {
     const varianceQn = qnValues.reduce((a, b) => a + Math.pow(b - meanQn, 2), 0) / numSims;
     const stdDevQn = Math.sqrt(varianceQn);
     const theoreticalStdDev = 50 / (fMu(mu) * Math.sqrt(n));
-    const relativeError = Math.abs(stdDevQn - theoreticalStdDev) / theoreticalStdDev * 100;
+    const relativeError = theoreticalStdDev > 0 ? Math.abs(stdDevQn - theoreticalStdDev) / theoreticalStdDev * 100 : 0;
 
     // Atualizar resultados
     document.getElementById('result').innerHTML = `
@@ -80,11 +78,11 @@ window.onload = function() {
         Erro Relativo: ${relativeError.toFixed(2)}%
     `;
 
-    // Atualizar Histograma (idêntico ao original)
+    // Atualizar Histograma
     const histogramCtx = document.getElementById('histogramChart').getContext('2d');
     if (histogramChart) histogramChart.destroy();
     const histData = {
-        labels: Array.from({length: 20}, (_, i) => (i * 5)), // Bins de 0 a 100
+        labels: Array.from({length: 20}, (_, i) => i * 5), // Bins de 0 a 95
         datasets: [{
             label: 'Distribuição de Q_n',
             data: createHistogramData(qnValues, 5),
@@ -104,10 +102,10 @@ window.onload = function() {
         }
     });
 
-    // Atualizar Curva Normal Teórica (idêntico ao original)
-    const normalCtx = document.getElementById('normalChart').getContext('2d');
+    // Atualizar Curva Normal Teórica
+    const normalCtx = document.getElementById('distributionChart').getContext('2d');
     if (normalChart) normalChart.destroy();
-    const normalCurve = generateNormalCurve(meanQn, theoreticalStdDev, 0, 100, 100);
+    const normalCurve = generateNormalCurve(100 * mu, theoreticalStdDev, 0, 100, 100);
     const normalData = {
         labels: normalCurve.x,
         datasets: [{

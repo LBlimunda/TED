@@ -43,8 +43,20 @@ function generateNormalCurve(mean, stdDev, minX, maxX, numPoints) {
     return { x: xValues, y: yValues };
 }
 
-// Função principal (idêntica ao original, com fórmula ajustada)
-window.onload = function() {
+// Função principal
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js não carregado. Verifique o CDN.');
+        return;
+    }
+
+    const histogramCanvas = document.getElementById('histogramChart');
+    const normalCanvas = document.getElementById('distributionChart');
+    if (!histogramCanvas || !normalCanvas) {
+        console.error('Canvas não encontrado: histogramChart ou distributionChart ausente.');
+        return;
+    }
+
     const n = parseInt(document.getElementById('sampleSize').value) || 100;
     const mu = parseFloat(document.getElementById('populationProp').value) || 0.5;
     const numSims = 1000; // Simulações para o histograma
@@ -79,7 +91,7 @@ window.onload = function() {
     `;
 
     // Atualizar Histograma
-    const histogramCtx = document.getElementById('histogramChart').getContext('2d');
+    const histogramCtx = histogramCanvas.getContext('2d');
     if (histogramChart) histogramChart.destroy();
     const histData = {
         labels: Array.from({length: 20}, (_, i) => i * 5), // Bins de 0 a 95
@@ -103,7 +115,7 @@ window.onload = function() {
     });
 
     // Atualizar Curva Normal Teórica
-    const normalCtx = document.getElementById('distributionChart').getContext('2d');
+    const normalCtx = normalCanvas.getContext('2d');
     if (normalChart) normalChart.destroy();
     const normalCurve = generateNormalCurve(100 * mu, theoreticalStdDev, 0, 100, 100);
     const normalData = {
@@ -127,4 +139,4 @@ window.onload = function() {
             }
         }
     });
-};
+});

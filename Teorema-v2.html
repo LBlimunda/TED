@@ -68,11 +68,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
     const container = document.body;
 
-    // Criar canvas
-    let canvas = document.getElementById('entropyChart');
+    // Criar canvas se não existir
+    let canvas = document.getElementById('entropyComparisonChart');
     if(!canvas){
         canvas = document.createElement('canvas');
-        canvas.id = 'entropyChart';
+        canvas.id = 'entropyComparisonChart';
         canvas.style.maxWidth = '900px';
         canvas.style.height = '450px';
         container.appendChild(canvas);
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function(){
     function randomNormal(mean, stdDev){
         const u1 = Math.random();
         const u2 = Math.random();
-        const z = Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+        const z = Math.sqrt(-2*Math.log(u1)) * Math.cos(2*Math.PI*u2);
         return mean + stdDev*z;
     }
 
@@ -96,9 +96,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
     function simulateQn(n, sims){
         const results = [];
-        for(let s=0;s<sims;s++){
+        for(let s=0; s<sims; s++){
             const props = [];
-            for(let j=0;j<n;j++){
+            for(let j=0; j<n; j++){
                 let pi = randomNormal(0.5,0.2);
                 pi = Math.min(Math.max(pi,0),1);
                 props.push(pi);
@@ -108,79 +108,55 @@ document.addEventListener('DOMContentLoaded', function(){
         return results;
     }
 
-    // Configuração do gráfico
+    // Parâmetros
+    const sampleSizes = [100, 5000, 20000, 100000]; // diferentes n
+    const simsPerN = 100; // número de replicações
+    const colors = ['blue','green','orange','red'];
+
     const chartData = {
-        labels: [],
-        datasets:[
-            {
-                label:'Média Q_n',
-                data: [],
-                borderColor:'blue',
-                fill:false,
-                tension:0.2,
-                pointRadius:3
-            },
-            {
-                label:'Banda ±SD',
-                data: [],
-                borderColor:'transparent',
-                backgroundColor:'rgba(54,162,235,0.2)',
-                fill:'+1',
-                pointRadius:0
-            },
-            {
-                label:'Ponto de entropia (50)',
-                data: [],
-                borderColor:'red',
-                borderDash:[5,5],
-                fill:false,
-                pointRadius:0
-            }
-        ]
+        labels: Array.from({length:simsPerN}, (_,i)=>i+1),
+        datasets: []
     };
 
-    const chart = new Chart(ctx,{
+    sampleSizes.forEach((n, idx) => {
+        const qValues = simulateQn(n,simsPerN);
+        chartData.datasets.push({
+            label: `n = ${n}`,
+            data: qValues,
+            borderColor: colors[idx],
+            fill:false,
+            tension:0.2,
+            pointRadius:2
+        });
+    });
+
+    // Linha horizontal ponto de entropia (50)
+    chartData.datasets.push({
+        label: 'Ponto de entropia (50)',
+        data: Array(simsPerN).fill(50),
+        borderColor: 'black',
+        borderDash:[5,5],
+        fill:false,
+        pointRadius:0
+    });
+
+    // Inicializar gráfico
+    new Chart(ctx,{
         type:'line',
-        data:chartData,
+        data: chartData,
         options:{
             responsive:true,
             plugins:{
                 tooltip:{enabled:true, mode:'index', intersect:false},
-                legend:{display:true}
+                legend:{display:true, position:'top'}
             },
             scales:{
-                x:{ title:{display:true,text:'Tamanho da amostra n'} },
+                x:{ title:{display:true,text:'Replicação'} },
                 y:{ title:{display:true,text:'Q_n'}, min:0, max:100 }
             }
         }
     });
 
-    // Simulação progressiva
-    const nMax = 500;
-    const step = 10;
-    const simsPerN = 100;
-
-    let nCurrent = step;
-
-    function runSimulation(){
-        const qValues = simulateQn(nCurrent,simsPerN);
-        const meanQ = qValues.reduce((a,b)=>a+b,0)/qValues.length;
-        const sdQ = Math.sqrt(qValues.reduce((a,b)=>a+Math.pow(b-meanQ,2),0)/qValues.length);
-
-        chart.data.labels.push(nCurrent);
-        chart.data.datasets[0].data.push(meanQ);
-        chart.data.datasets[1].data.push({y:meanQ+sdQ});
-        chart.data.datasets[2].data.push(50); // linha entropia
-
-        chart.update();
-
-        if(nCurrent<nMax){
-            nCurrent += step;
-            setTimeout(runSimulation,500);
-        }
-    }
-
-    runSimulation();
 });
 </script>
 

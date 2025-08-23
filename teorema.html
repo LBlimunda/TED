@@ -51,6 +51,13 @@ Q<sub>n</sub> = 100 &times; med(p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>n</sub>
 </label>
 
 <canvas id="entropyChart"></canvas>
+<h2>Cálculo do Ponto de Entropia (n_crit)</h2>
+<div class="formula">
+n<sub>crit</sub> = menor n tal que SD(Q<sub>n</sub>) ≤ 1
+</div>
+<p>O gráfico abaixo mostra SD(Q<sub>n</sub>) em função de n. A linha preta tracejada indica o limiar de entropia (SD=1) e o ponto roxo mostra o n<sub>crit</sub>.</p>
+
+<canvas id="entropyPointChart"></canvas>
 
 <div class="license">
 <p>© Lara Raquel Rodrigues Branco Arsénio (CC BY-SA 4.0)</p>
@@ -147,10 +154,90 @@ function updateChart(){
         }
     });
 }
+// --- Novo cálculo n_crit com anotação visual ---
+function updateEntropyPointChart(){
+    const distType=document.getElementById('distType').value;
+    const nValues=[100,500,1000,5000,20000,100000];
+    const simsPerN=500;
+    const sdData=[];
 
-// Inicializar
-updateChart();
-document.getElementById('distType').addEventListener('change',updateChart);
+    nValues.forEach(n=>{
+        const qSamples=simulateQn(n,simsPerN,distType);
+        const meanQ=qSamples.reduce((a,b)=>a+b,0)/qSamples.length;
+        const sdQ=Math.sqrt(qSamples.reduce((a,b)=>a+Math.pow(b-meanQ,2),0)/qSamples.length);
+        sdData.push(sdQ);
+    });
+
+    const threshold=1;
+    const nCrit=nValues.find((n,i)=>sdData[i]<=threshold);
+    const nCritIndex=nValues.indexOf(nCrit);
+
+    const ctx=document.getElementById('entropyPointChart').getContext('2d');
+    if(window.entropyChart) window.entropyChart.destroy();
+    window.entropyChart=new Chart(ctx,{
+        type:'line',
+        data:{
+            labels:nValues,
+            datasets:[
+                {
+                    label:'SD(Q_n)',
+                    data:sdData,
+                    borderColor:'purple',
+                    fill:false,
+                    tension:0.2,
+                    pointRadius:5
+                },
+                {
+                    label:'Limiar de entropia (SD=1)',
+                    data:Array(nValues.length).fill(threshold),
+                    borderColor:'black',
+                    borderDash:[5,5],
+                    fill:false,
+                    pointRadius:0
+                },
+                {
+                    label:'Ponto de entropia n_crit',
+                    data:sdData.map((v,i)=>i===nCritIndex?v:null),
+                    borderColor:'red',
+                    backgroundColor:'red',
+                    pointRadius:8,
+                    showLine:false
+                }
+            ]
+        },
+        options:{
+            responsive:true,
+            plugins:{
+                tooltip:{
+                    enabled:true,
+                    callbacks:{
+                        label:function(context){
+                            if(context.dataset.label==='Ponto de entropia n_crit'){
+                                return `n_crit = ${nCrit}, SD(Q_n)=${context.raw.toFixed(3)}`;
+                            }
+                            return `${context.dataset.label}: ${context.raw.toFixed(3)}`;
+                        }
+                    }
+                },
+                legend:{display:true, position:'top'}
+            },
+            scales:{
+                x:{title:{display:true,text:'Tamanho da Amostra n'}, type:'log', ticks:{callback: function(val){return Number(val);}}},
+                y:{title:{display:true,text:'SD(Q_n)'}, min:0}
+            }
+        }
+    });
+
+    console.log("Ponto de entropia aproximado n_crit:", nCrit);
+}
+function updateAllCharts(){
+    updateChart();
+    updateEntropyPointChart();
+}
+
+// Inicialização
+updateAllCharts();
+document.getElementById('distType').addEventListener('change', updateAllCharts);
 </script>
 </body>
 </html>

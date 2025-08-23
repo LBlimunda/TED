@@ -63,85 +63,91 @@
 <h1>Animação da Entropia Democrática</h1>
 <canvas id="animatedChart"></canvas>
 <p id="currentN"></p>
-        <script>
+<script>
 document.addEventListener('DOMContentLoaded', function(){
 
-    // Criar canvas e parágrafos se não existirem
-    if (!document.getElementById('animatedChart')) {
-        const container = document.body;
+    const container = document.body;
 
-        const canvas = document.createElement('canvas');
-        canvas.id = 'animatedChart';
-        canvas.style.maxWidth = '800px';
-        canvas.style.height = '400px';
+    // Criar canvas
+    let canvas = document.getElementById('entropyChart');
+    if(!canvas){
+        canvas = document.createElement('canvas');
+        canvas.id = 'entropyChart';
+        canvas.style.maxWidth = '900px';
+        canvas.style.height = '450px';
         container.appendChild(canvas);
-
-        const infoP = document.createElement('p');
-        infoP.id = 'chartInfo';
-        infoP.style.fontWeight = 'bold';
-        container.appendChild(infoP);
-
-        const legendP = document.createElement('p');
-        legendP.id = 'chartLegend';
-        legendP.style.maxWidth = '800px';
-        legendP.style.marginTop = '10px';
-        container.appendChild(legendP);
     }
 
+    const ctx = canvas.getContext('2d');
+
     // Funções matemáticas
-    function randomNormal(mean, stdDev) {
+    function randomNormal(mean, stdDev){
         const u1 = Math.random();
         const u2 = Math.random();
-        const z = Math.sqrt(-2*Math.log(u1)) * Math.cos(2*Math.PI*u2);
+        const z = Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
         return mean + stdDev*z;
     }
 
-    function median(values) {
+    function median(values){
         values.sort((a,b)=>a-b);
         const half = Math.floor(values.length/2);
-        return values.length % 2 ? values[half] : (values[half-1]+values[half])/2;
+        return values.length%2 ? values[half] : (values[half-1]+values[half])/2;
     }
 
-    function simulateQn(n) {
-        const props = [];
-        for(let j=0;j<n;j++){
-            let pi = randomNormal(0.5,0.2);
-            pi = Math.min(Math.max(pi,0),1);
-            props.push(pi);
+    function simulateQn(n, sims){
+        const results = [];
+        for(let s=0;s<sims;s++){
+            const props = [];
+            for(let j=0;j<n;j++){
+                let pi = randomNormal(0.5,0.2);
+                pi = Math.min(Math.max(pi,0),1);
+                props.push(pi);
+            }
+            results.push(100*median(props));
         }
-        return 100 * median(props);
+        return results;
     }
 
-    // Inicializar gráfico
-    const ctx = document.getElementById('animatedChart').getContext('2d');
-    const chart = new Chart(ctx, {
+    // Configuração do gráfico
+    const chartData = {
+        labels: [],
+        datasets:[
+            {
+                label:'Média Q_n',
+                data: [],
+                borderColor:'blue',
+                fill:false,
+                tension:0.2,
+                pointRadius:3
+            },
+            {
+                label:'Banda ±SD',
+                data: [],
+                borderColor:'transparent',
+                backgroundColor:'rgba(54,162,235,0.2)',
+                fill:'+1',
+                pointRadius:0
+            },
+            {
+                label:'Ponto de entropia (50)',
+                data: [],
+                borderColor:'red',
+                borderDash:[5,5],
+                fill:false,
+                pointRadius:0
+            }
+        ]
+    };
+
+    const chart = new Chart(ctx,{
         type:'line',
-        data:{
-            labels:[],
-            datasets:[
-                {
-                    label:'Q_n',
-                    data:[],
-                    borderColor:'rgba(54,162,235,1)',
-                    backgroundColor:'rgba(54,162,235,0.2)',
-                    fill:false,
-                    tension:0.2,
-                    pointRadius:4
-                },
-                {
-                    label:'Média acumulada Q_n',
-                    data:[],
-                    borderColor:'red',
-                    borderDash:[5,5],
-                    fill:false,
-                    pointRadius:0
-                }
-            ]
-        },
+        data:chartData,
         options:{
             responsive:true,
-            animation:{duration:700},
-            plugins:{ tooltip:{enabled:true} },
+            plugins:{
+                tooltip:{enabled:true, mode:'index', intersect:false},
+                legend:{display:true}
+            },
             scales:{
                 x:{ title:{display:true,text:'Tamanho da amostra n'} },
                 y:{ title:{display:true,text:'Q_n'}, min:0, max:100 }
@@ -149,43 +155,35 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     });
 
-    // Simulação animada
-    let currentN = 1;
-    const maxN = 1000;
+    // Simulação progressiva
+    const nMax = 500;
     const step = 10;
+    const simsPerN = 100;
 
-    function updateChart(){
-        const qn = simulateQn(currentN);
-        chart.data.labels.push(currentN);
-        chart.data.datasets[0].data.push(qn);
+    let nCurrent = step;
 
-        // Média acumulada
-        const meanQ = chart.data.datasets[0].data.reduce((a,b)=>a+b,0)/chart.data.datasets[0].data.length;
-        chart.data.datasets[1].data.push(meanQ);
+    function runSimulation(){
+        const qValues = simulateQn(nCurrent,simsPerN);
+        const meanQ = qValues.reduce((a,b)=>a+b,0)/qValues.length;
+        const sdQ = Math.sqrt(qValues.reduce((a,b)=>a+Math.pow(b-meanQ,2),0)/qValues.length);
+
+        chart.data.labels.push(nCurrent);
+        chart.data.datasets[0].data.push(meanQ);
+        chart.data.datasets[1].data.push({y:meanQ+sdQ});
+        chart.data.datasets[2].data.push(50); // linha entropia
 
         chart.update();
 
-        // Texto informativo
-        document.getElementById('chartInfo').textContent =
-            `Tamanho da amostra n = ${currentN}, Q_n atual ≈ ${qn.toFixed(1)}, Média acumulada ≈ ${meanQ.toFixed(1)}`;
-
-        // Legenda explicativa
-        document.getElementById('chartLegend').innerHTML = `
-            <strong>Legenda:</strong> O gráfico representa a evolução de Q_n = 100 × mediana(p_i) 
-            à medida que o tamanho da amostra n aumenta. Inicialmente, Q_n varia mais devido à dispersão das preferências individuais.
-            À medida que n cresce, Q_n converge para aproximadamente 50, evidenciando o ponto de entropia do sistema democrático.
-            A linha vermelha tracejada mostra a média acumulada de Q_n, reforçando a estabilização do valor central.
-        `;
-
-        if(currentN < maxN){
-            currentN += step;
-            setTimeout(updateChart,700);
+        if(nCurrent<nMax){
+            nCurrent += step;
+            setTimeout(runSimulation,500);
         }
     }
 
-    updateChart();
+    runSimulation();
 });
 </script>
+
 
 
 </body>

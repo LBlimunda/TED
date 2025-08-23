@@ -157,11 +157,45 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     });
 
+    const container = document.body;
+    // Criar bloco dinâmico
+    const outputDiv = document.createElement('div');
+    outputDiv.style.background = "#ecf0f1";
+    outputDiv.style.padding = "10px";
+    outputDiv.style.borderLeft = "5px solid #3498db";
+    outputDiv.style.margin = "20px 0";
+    outputDiv.style.fontFamily = "monospace";
+    container.appendChild(outputDiv);
+
+    // Fórmula e cálculo
+    const f_mu = 0.8;       // fator f(μ), ajustável
+    const targetSD = 1;     // desvio aceitável
+    const nCrit = Math.ceil(Math.pow(50/(f_mu*targetSD),2));
+
+    const sampleSizes = [100, 5000, 20000, 100000]; // já usados no gráfico
+
+    // Montar HTML dinâmico
+    let html = "";
+    html += "<p><strong>Fórmula:</strong> σ(Q<sub>n</sub>) = 50 / ( f(μ) · √n )</p>";
+    html += "<p><strong>Condição:</strong> σ(Q<sub>n</sub>) ≤ 1</p>";
+    html += `<p><strong>Ponto crítico:</strong> N<sub>crit</sub> = ${nCrit}</p>`;
+    html += "<p><u>Comparação com os n simulados:</u></p><ul>";
+
+    sampleSizes.forEach(n => {
+        const sd = 50 / (f_mu * Math.sqrt(n));
+        if(n < nCrit){
+            html += `<li>n = ${n}: antes do ponto crítico (σ(Q<sub>n</sub>) ≈ ${sd.toFixed(2)} > 1)</li>`;
+        } else {
+            html += `<li>n = ${n}: depois do ponto crítico (σ(Q<sub>n</sub>) ≈ ${sd.toFixed(2)} ≤ 1)</li>`;
+        }
+    });
+
+    html += "</ul>";
+
+    // Escrever no bloco
+    outputDiv.innerHTML = html;
 });
-    
-
 </script>
-
 
 
 </body>

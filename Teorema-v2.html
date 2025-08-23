@@ -63,98 +63,128 @@
 <h1>Animação da Entropia Democrática</h1>
 <canvas id="animatedChart"></canvas>
 <p id="currentN"></p>
-
 <script>
+// Criar HTML dinâmico se necessário
+if (!document.getElementById('animatedChart')) {
+    const container = document.body;
+    const canvas = document.createElement('canvas');
+    canvas.id = 'animatedChart';
+    container.appendChild(canvas);
+
+    const infoP = document.createElement('p');
+    infoP.id = 'chartInfo';
+    infoP.style.fontWeight = 'bold';
+    container.appendChild(infoP);
+}
+
 function randomNormal(mean, stdDev) {
-  const u1 = Math.random();
-  const u2 = Math.random();
-  const z = Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
-  return mean + stdDev*z;
+    const u1 = Math.random();
+    const u2 = Math.random();
+    const z = Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+    return mean + stdDev*z;
 }
 
 function median(values) {
-  values.sort((a,b)=>a-b);
-  const half = Math.floor(values.length/2);
-  return values.length%2 ? values[half] : (values[half-1]+values[half])/2;
+    values.sort((a,b)=>a-b);
+    const half = Math.floor(values.length/2);
+    return values.length%2 ? values[half] : (values[half-1]+values[half])/2;
 }
 
 function simulateQn(n, numSims=300) {
-  const qnValues = [];
-  for(let i=0;i<numSims;i++){
-    const props = [];
-    for(let j=0;j<n;j++){
-      let pi = randomNormal(0.5,0.2);
-      pi = Math.min(Math.max(pi,0),1);
-      props.push(pi);
+    const qnValues = [];
+    for(let i=0;i<numSims;i++){
+        const props = [];
+        for(let j=0;j<n;j++){
+            let pi = randomNormal(0.5,0.2);
+            pi = Math.min(Math.max(pi,0),1);
+            props.push(pi);
+        }
+        qnValues.push(100*median(props));
     }
-    qnValues.push(100*median(props));
-  }
-  return qnValues;
+    return qnValues;
 }
 
 function createHistogramData(values, binSize=5){
-  const bins = Array(20).fill(0);
-  values.forEach(val => bins[Math.min(Math.floor(val/binSize),19)]++);
-  return bins;
+    const bins = Array(20).fill(0);
+    values.forEach(val => bins[Math.min(Math.floor(val/binSize),19)]++);
+    return bins;
 }
 
+// Configuração inicial do Chart.js
 const ctx = document.getElementById('animatedChart').getContext('2d');
 const chart = new Chart(ctx,{
-  type:'bar',
-  data:{
-    labels:Array.from({length:20},(_,i)=>i*5),
-    datasets:[{
-      label:'Distribuição Q_n',
-      data:Array(20).fill(0),
-      backgroundColor:'rgba(54,162,235,0.5)',
-      borderColor:'rgba(54,162,235,1)',
-      borderWidth:1
-    }]
-  },
-  options:{
-    responsive:true,
-    animation:{ duration:500 }, // animação mais lenta
-    plugins:{
-      tooltip:{
-        enabled:true,
-        callbacks:{
-          label: function(context) {
-            return `Frequência: ${context.raw}`;
-          },
-          afterLabel: function(context) {
-            const data = chart.data.datasets[0].data;
-            const total = data.reduce((a,b)=>a+b,0);
-            const mean = data.reduce((a,b,i)=>a+i*b,0)/total;
-            const variance = data.reduce((a,b,i)=>a+b*Math.pow(i*5-mean,2),0)/total;
-            const stdDev = Math.sqrt(variance);
-            return `Média ~${mean.toFixed(1)}, SD ~${stdDev.toFixed(1)}`;
-          }
-        }
-      }
+    type:'bar',
+    data:{
+        labels:Array.from({length:20},(_,i)=>i*5),
+        datasets:[{
+            label:'Distribuição Q_n',
+            data:Array(20).fill(0),
+            backgroundColor:Array(20).fill('rgba(54,162,235,0.5)'),
+            borderColor:Array(20).fill('rgba(54,162,235,1)'),
+            borderWidth:1
+        }]
     },
-    scales:{
-      x:{ title:{display:true,text:'Q_n'} },
-      y:{ beginAtZero:true, title:{display:true,text:'Frequência'} }
+    options:{
+        responsive:true,
+        animation:{ duration:500 },
+        plugins:{
+            tooltip:{
+                enabled:true,
+                callbacks:{
+                    label: function(context) {
+                        return `Frequência: ${context.raw}`;
+                    },
+                    afterLabel: function(context){
+                        return document.getElementById('chartInfo').textContent;
+                    }
+                }
+            }
+        },
+        scales:{
+            x:{ title:{display:true,text:'Q_n'} },
+            y:{ beginAtZero:true, title:{display:true,text:'Frequência'} }
+        }
     }
-  }
 });
 
 let currentN = 1;
 const maxN = 1000;
+let cumulativeData = Array(20).fill(0); // acumula histograma
 
 function updateChart(){
-  const qnValues = simulateQn(currentN, 300);
-  chart.data.datasets[0].data = createHistogramData(qnValues);
-  chart.update();
-  currentN += Math.floor(currentN*0.05)+1; // aumento gradual
-  if(currentN <= maxN){
-    setTimeout(updateChart, 700); // atualização mais lenta
-  }
+    const qnValues = simulateQn(currentN, 300);
+    const histData = createHistogramData(qnValues);
+
+    // Atualizar histograma cumulativo suavemente
+    for(let i=0;i<20;i++){
+        cumulativeData[i] = cumulativeData[i]*0.7 + histData[i]*0.3; // suavização exponencial
+    }
+    chart.data.datasets[0].data = cumulativeData;
+
+    // Atualizar cores para destacar bin central (≈50)
+    const colors = cumulativeData.map((_,i) => (i===10 ? 'rgba(255,0,0,0.6)' : 'rgba(54,162,235,0.5)'));
+    chart.data.datasets[0].backgroundColor = colors;
+
+    chart.update();
+
+    // Estatísticas atuais
+    const meanQ = qnValues.reduce((a,b)=>a+b,0)/qnValues.length;
+    const varianceQ = qnValues.reduce((a,b)=>a+Math.pow(b-meanQ,2),0)/qnValues.length;
+    const sdQ = Math.sqrt(varianceQ);
+
+    // Atualizar info
+    document.getElementById('chartInfo').textContent = 
+        `Tamanho da amostra n = ${currentN}, Média Q_n ≈ ${meanQ.toFixed(1)}, SD ≈ ${sdQ.toFixed(1)}`;
+
+    // Aumentar n gradualmente
+    currentN += Math.floor(currentN*0.05)+1;
+    if(currentN <= maxN){
+        setTimeout(updateChart, 700);
+    }
 }
 
 updateChart();
-</script>
-
+    </script>
 </body>
 </html>
 

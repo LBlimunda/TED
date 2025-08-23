@@ -49,6 +49,7 @@ th { background-color: #eee; }
 <table>
 <tr><th>n</th><th>Média Qₙ</th><th>SD(Qₙ)</th></tr>
 <tr><td>100</td><td id="mean100"></td><td id="sd100"></td></tr>
+<tr><td>1000</td><td id="mean1000"></td><td id="sd1000"></td></tr>
 <tr><td>5000</td><td id="mean5000"></td><td id="sd5000"></td></tr>
 <tr><td>20000</td><td id="mean20000"></td><td id="sd20000"></td></tr>
 <tr><td>100000</td><td id="mean100000"></td><td id="sd100000"></td></tr>
@@ -74,7 +75,7 @@ function median(arr){ arr.sort((a,b)=>a-b); const h=Math.floor(arr.length/2); re
 function simulateQn(n,sims){ const res=[]; for(let i=0;i<sims;i++){ const props=[]; for(let j=0;j<n;j++){ let p=randomNormal(0.5,0.2); props.push(Math.min(Math.max(p,0),1)); } res.push(100*median(props)); } return res; }
 
 // Parâmetros
-const sampleSizes=[100,5000,20000,100000];
+const sampleSizes=[100,1000,5000,20000,100000];
 const simsPerN=100;
 const colors=['blue','green','orange','red'];
 const ctx=document.getElementById('entropyChart').getContext('2d');

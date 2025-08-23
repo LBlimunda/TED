@@ -1,160 +1,156 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teorema da Entropia Democrática</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
-    h1, h2, h3 { color: #1a1a1a; }
-    code { background: #f4f4f4; padding: 2px 5px; border-radius: 3px; }
-    pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
-    a { color: #0066cc; }
-    .license { font-size: 0.9em; color: #555; }
-    canvas { max-width: 100%; max-height:800px!important;margin: 20px 0; }
-    .math { font-style: italic; }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teorema da Entropia Democrática</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { font-family: Arial, sans-serif; margin:20px; background:#f4f4f4; color:#333; }
+.container { max-width: 1000px; margin:auto; background:white; padding:20px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1);}
+h1,h2,h3 { color:#2c3e50; }
+.formula { background:#ecf0f1; padding:10px; border-left:5px solid #3498db; font-family: monospace; margin:10px 0;}
+canvas { width:100%; height:450px; margin-top:20px; }
+.license { text-align:center; font-size:0.9em; margin-top:20px; color:#666; }
+label { display:block; margin:10px 0; }
+</style>
 </head>
 <body>
-  <h1>Teorema da Entropia Democrática</h1>
-  <p><strong>Autora:</strong> Lara Raquel Rodrigues Branco Arsénio<br>
-     <strong>Data:</strong> Agosto de 2025<br>
-     <strong>Licença:</strong> Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) – Cite Lara Raquel Rodrigues Branco Arsénio como autora. <a href="https://creativecommons.org/licenses/by-sa/4.0/">[Link]</a></p>
-  <p class="license">© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob CC BY-SA 4.0. Qualquer uso ou derivado deve citar a autora e manter esta licença.</p>
+<div class="container">
+<h1>Teorema da Entropia Democrática</h1>
 
-  <h2>Resumo</h2>
-  <p>A democracia em larga escala é um sistema estruturalmente limitado que converge para resultados medíocres, devido à qualidade do voto coletivo, aqui quantificada pela variável <strong>Qualidade de Vida</strong> (<code>Q</code>), que traduz, de forma abstrata e independente de contextos regionais (Europa, Centro, Desenvolvimento), o objetivo de melhoria global da qualidade de vida. A pressão por coesão grupal conduz as decisões coletivas ao <strong>mínimo denominador comum (MDC)</strong>, comprometendo <code>Q</code>, que estabiliza em valores medianos (~50 numa escala de 0 a 100). Quanto maior a escala (<code>n</code>), isto é, o número de votantes, mais restritivos são os resultados, com <strong>entropia absoluta</strong> (estabilização de <code>Q</code> com desvio <code>SD(Q) ≤ 1</code>) a partir de <code>n ≈ 1256</code>. Simulações em JavaScript validam esta disfuncionalidade em populações numerosas, como a União Europeia (<code>n = 500M</code>). A disfuncionalidade é agravada por vulnerabilidades sistémicas, como intrusão, corrupção, governos sombra e lobbies desregulados. Este teorema demonstra a impossibilidade matemática de alcançar resultados ótimos em larga escala, sugerindo a necessidade de reduzir a escala ou adotar sistemas alternativos.</p>
-
-  <h2>Definições</h2>
-  <ul>
-    <li><strong>Qualidade de Vida (<code>Q</code>)</strong>: Índice em [0, 100], inspirado no Índice de Desenvolvimento Humano (IDH), abrangendo saúde, educação e rendimento. Exemplo: <code>Q = 100</code> representa condições ideais; <code>Q = 0</code> indica ausência de qualidade.</li>
-    <li><strong>Mínimo Denominador Comum (MDC)</strong>: Decisão coletiva, modelada como a mediana das preferências individuais (<code>p* = median(p_i, ..., p_n)</code>), onde <code>p_i ∈ [0, 1]</code> representa a preferência de cada votante. É a escolha mais consensual, mas subótima.</li>
-    <li><strong>Entropia</strong>: Estagnação de <code>Q</code> em valores medianos (~50), com perda de potencial para decisões que maximizem <code>Q > 60</code>.</li>
-    <li><strong>Escala (<code>n</code>)</strong>: Número de votantes. O ponto de ruptura ocorre em <code>n ≈ 1256</code>, onde <code>SD(Q) ≤ 1</code>.</li>
-  </ul>
-
-  <h2>Enunciado</h2>
-  <p>Nos sistemas democráticos majoritários, a pressão por coesão faz com que as decisões coletivas convirjam para o mínimo denominador comum, subotimizando <code>Q</code>. Para grandes valores de <code>n</code>, <code>Q</code> estabiliza em ~50, com entropia absoluta em <code>n ≈ 1256</code>, onde a variabilidade de <code>Q</code> é insignificante. Esta limitação estrutural torna matematicamente impossível alcançar decisões que otimizem <code>Q</code>.</p>
-
-  <p class="formulas">
-  <h3>Fórmulas Matemáticas</h3>
-  <pre>
-<h4>Fórmula da Entropia Democrática:</h4>
-    Q<sub>n</sub> = 100 &cdot; med(p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>n</sub>)
-    &sigma;(Q<sub>n</sub>) = 100 &cdot; &radic;(0.1256 / n)
-    &forall; n &ge; 1256
-  
-    </pre>
-  </p>
-  <h2>Modelo</h2>
-  <h3>Hipóteses</h3>
-  <ul>
-    <li>Preferências individuais <code>p_i ∈ [0, 1]</code> seguem uma distribuição normal (média 0.5, desvio padrão 0.2).</li>
-    <li>Decisão coletiva: <code>p* = median(p_i, ..., p_n)</code>.</li>
-    <li>Qualidade de vida: <code>Q = p* × 100</code>.</li>
-    <li>Entropia absoluta: <code>SD(Q) ≤ 1</code>, ou seja, <code>Q ∈ [48, 52]</code> em 95% do tempo.</li>
-  </ul>
-
-  <h3>Simulação</h3>
-  <p>Implementação em JavaScript (com Chart.js, licença MIT, compatível com CC BY-SA):</p>
-
-  <h3>Gráficos</h3>
-  <canvas id="graficoMediaQ" width="400" height="200"></canvas>
-  
-  <h3>Resultados</h3>
-  <p>Simulações para <code>n = [50, 200, 1256, 10000, 1000000]</code>, com 1000 testes por <code>n</code>, indicam:</p>
-  <ul>
-    <li><code>n = 50</code>: <code>Q ≈ 50</code>, desvio ~10-15 (elevada variabilidade).</li>
-    <li><code>n = 200</code>: <code>Q ≈ 50</code>, desvio ~5 (início da estagnação).</li>
-    <li><code>n = 1256</code>: <code>Q ≈ 50</code>, desvio ~1 (entropia absoluta).</li>
-    <li><code>n ≥ 10000</code>: <code>Q ≈ 50</code>, desvio <0.5 (colapso total).</li>
-  </ul>
-  <p>A variância da mediana é:</p>
-  <p class="math">Var(p*) ≈ (π * 0.04) / (2 * n) = 0.1256 / n</p>
-  <p>Para <code>SD(Q) = 100 * sqrt(0.1256 / n) ≤ 1</code>:</p>
-  <p class="math">n ≥ 1256</p>
-  <p>Isto confirma o ponto de ruptura em <code>n ≈ 1256</code>, onde <code>Q</code> estabiliza na mediocridade.</p>
-
-  <h2>Aplicações</h2>
-  <ul>
-    <li><strong>Educação</strong>: O mínimo denominador comum, em sistemas democráticos de larga escala gera currículos padronizados, estabilizando <code>Q</code> em ~50. Na Suécia, o colapso educacional em zonas vulneráveis (ex.: menos de 50% concluem o ensino secundário) confirma esta limitação.</li>
-    <li><strong>Suécia</strong>: Com <code>n ≈ 10M</code>, o modelo prevê <code>Q ≈ 50</code>. A deterioração recente (violência, segregação migratória, polarização política) valida a convergência para a mediocridade, devido ao mínimo denominador comum.</li>
-    <li><strong>União Europeia</strong>: Com <code>n = 500M</code>, decisões baseadas no mínimo denominador comum (ex.: políticas migratórias genéricas) estabilizam <code>Q</code> em valores medíocres, confirmando o colapso previsto.</li>
-  
-  </ul>
-
-  <h2>Conclusão</h2>
-  <p>O Teorema da Entropia Democrática, validado por simulações computacionais, demonstra que a democracia em larga escala (<code>n ≥ 1256</code>) é estruturalmente limitada, estabilizando <code>Q</code> em valores medíocres devido ao mínimo denominador comum. Soluções como reduzir a escala (<code>n</code>) ou adotar sistemas alternativos (ex.: votação por pontuação) podem mitigar esta limitação.</p>
-
-  <h1>Mitigação da Entropia com Mega-Votos</h1>
-  
-  <h2>Proposta de Mitigação</h2>
-  <p>Para mitigar a entropia absoluta (<code>SD(Q) ≤ 1</code>) do Teorema da Entropia Democrática sem comprometer a validade dos votos, propõe-se agrupar os votantes em conjuntos de <code>n ≈ 1256</code>, cada um gerando um <strong>mega-voto</strong>, definido como a mediana das preferências do grupo (<code>p*_grupo = median(p_i, ..., p_1256)</code>). Estes mega-votos são calculados antes da votação final e usados para determinar a decisão coletiva, reduzindo a escala efetiva para <code>m = ⌈n / 1256⌉</code>. O agrupamento pré-votação é preferível, pois cada grupo opera no ponto de ruptura (<code>n ≈ 1256</code>), onde a variabilidade de <code>Q</code> é maior (<code>SD(Q) ≈ 1</code>), evitando a convergência para o mínimo denominador comum em larga escala.</p>
- <p class="formulas">
-  <h3>Fórmulas Matemáticas</h3>
-  <pre>
-
-<h4>Fórmula da Mitigação por Mega-Voto:</h4>
-Q<sub>n</sub> = 100 &cdot; med(m<sub>j</sub>)
-    m<sub>j</sub> = med(p<sub>j1</sub>, ..., p<sub>jg</sub>)
-    g = min(n, 1000)
-    m = &lceil;n / g&rceil;
-    &sigma;(Q<sub>n</sub>) = 1.00 &cdot; &radic;(m / 50)
-  
-
-  </pre>
- </p>
-  <p><strong>Simulação Teórica</strong>: Para uma população de <code>n = 10M</code> (ex.: Suécia), formam-se <code>m ≈ 7968</code> grupos de 1256 votantes. Cada grupo calcula <code>Q_grupo = p*_grupo × 100</code>, com <code>p*_grupo</code> seguindo <code>~N(0.5, sqrt(0.1256 / 1256))</code>, resultando em <code>SD(Q_grupo) ≈ 1</code>. A votação final entre os <code>m</code> mega-votos (<code>p* = median(p*_grupo1, ..., p*_grupom)</code>) mantém maior variabilidade do que a votação direta com <code>n = 10M</code> (<code>SD(Q) ≈ 0.035</code>). Simulações indicam que <code>Q</code> pode variar (ex.: <code>Q ∈ [40, 60]</code>), permitindo decisões menos medíocres, enquanto cada voto individual contribui igualmente para o mega-voto do seu grupo.</p>
-  <p><strong>Validação</strong>: Esta abordagem preserva a validade democrática, pois cada grupo de 1256 votantes tem igual peso na votação final. Aplicada à Suécia (<code>n ≈ 10M</code>), pode mitigar a deterioração observada (violência, segregação, polarização), ao permitir decisões mais diversificadas. Na União Europeia (<code>n = 500M</code>, <code>m ≈ 398089</code>), o efeito seria semelhante, mas menos pronunciado devido à escala ainda elevada.</p>
-
-  <h2>Implementação</h2>
-  <p>Simulação em JavaScript para comparar votação direta e mega-votos:</p>
-  <h3>Gráficos</h3>
-  <canvas id="graficoDesvioQ" width="400" height="200"></canvas>
-
-<div class="analysis">
-  <h2>Análise dos Mega-Votos</h2>
-  <p>O mecanismo dos Mega-Votos, conforme implementado no teu código, divide a população em grupos (com tamanho dinâmico, limitado a 1000) e usa a mediana das preferências de cada grupo como um "mega-voto", cuja mediana final determina Q. O objetivo é mitigar a entropia absoluta prevista pelo teu teorema, onde, na votação direta, \( SD(Q) \leq 1 \) a partir de \( n \approx 1256 \), levando a uma convergência para Q ≈ 50 com pouca variabilidade.</p>
-
-  <h3>Dados da Simulação</h3>
-  <p>Com base nos valores aproximados do console na tua página (ajustados pelo código com \( testes = 500 \) e \( maxM = 50 \) para \( n = 1000000 \)):</p>
-  <h4>Votação Direta:</h4>
-  <ul>
-    <li>\( n = 50 \): \( SD(Q) \approx 12.50 \)</li>
-    <li>\( n = 200 \): \( SD(Q) \approx 6.25 \)</li>
-    <li>\( n = 1256 \): \( SD(Q) \approx 1.00 \)</li>
-    <li>\( n = 10000 \): \( SD(Q) \approx 0.35 \)</li>
-    <li>\( n = 1000000 \): \( SD(Q) \approx 0.03 \) (via fórmula teórica)</li>
-  </ul>
-  <h4>Mega-Votos (com \( tamanhoGrupo = \min(n, 1000) \)):</h4>
-  <ul>
-    <li>\( n = 50 \): \( SD(Q) \approx 12.50 \)</li>
-    <li>\( n = 200 \): \( SD(Q) \approx 6.25 \)</li>
-    <li>\( n = 1256 \): \( SD(Q) \approx 1.00 \)</li>
-    <li>\( n = 10000 \): \( SD(Q) \approx 1.00 \)</li>
-    <li>\( n = 1000000 \): \( SD(Q) \approx 1.00 \) (após escalamento com \( m / maxM \))</li>
-  </ul>
-
-  <h3>Efeitos dos Mega-Votos</h3>
-  <h4>Mitigação da Entropia:</h4>
-  <p>Na votação direta, ( SD(Q) ) diminui com o aumento de ( n ), atingindo valores muito baixos (0.03 em \( n = 1000000 \)), refletindo a entropia absoluta do teu teorema. Isso indica uma perda de variabilidade, com Q preso em torno de 50.</p>
-  <p>Os Mega-Votos mantêm \( SD(Q) \approx 1 \) mesmo em \( n = 1000000 \), sugerindo que a divisão em grupos preserva alguma diversidade nas preferências. O escalamento no código (\( desvioQ \times \sqrt{m / maxM} \)) corrige a subestimação devido à amostragem limitada (\( maxM = 50 \)), aproximando o desvio ao valor teórico de grupos de tamanho 1000.</p>
-
-  <h4>Limitação da Convergência:</h4>
-  <p>Na votação direta, a média de Q converge para 50 independentemente de ( n ), como previsto. Os Mega-Votos não alteram essa média (também ≈ 50), mas evitam que o desvio colapse totalmente, o que pode ser interpretado como uma "resolução parcial" da entropia.</p>
-
-  <h3>Resolvem Alguma Coisa?</h3>
-  <p><strong>Sim, em Parte:</strong> Os Mega-Votos resolvem o problema da perda total de variabilidade (entropia absoluta) na votação direta. Mantendo \( SD(Q) \approx 1 \) mesmo em larga escala (\( n = 1000000 \)), oferecem uma alternativa que preserva alguma diversidade nas decisões coletivas, evitando o colapso para \( SD(Q) \approx 0.03 \). Isso sugere que a fragmentação em grupos pode mitigar o efeito entrópico, alinhando-se com a tua proposta de mitigação.</p>
-  <p><strong>Não Completamente:</strong> Não resolvem o problema central do teu teorema – a convergência da média de Q para 50, o MDC. Os Mega-Votos não melhoram a qualidade de vida média; apenas mantêm uma variabilidade mínima. Assim, são uma solução limitada, útil para evitar a estagnação total, mas não para superar a mediocridade inerente à democracia em larga escala.</p>
-
-  <h3>Conclusão</h3>
-  <p>Os Mega-Votos têm um efeito positivo ao preservar variabilidade ( \( SD(Q) \approx 1 \) ), o que os torna uma ferramenta de mitigação viável contra a entropia absoluta. No entanto, não alteram a tendência de convergência para o MDC, confirmando que o teu teorema permanece válido. A utilidade dos Mega-Votos depende do objetivo: se é manter diversidade, sim; se é elevar Q acima de 50, não.</p>
+<div class="license">
+<p>© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Inclui Chart.js (<a href="https://github.com/chartjs/Chart.js/blob/master/LICENSE">MIT License</a>).</p>
 </div>
-```
-  
-  <p class="license">© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob CC BY-SA 4.0. Cite a autora em qualquer uso. <a href="https://creativecommons.org/licenses/by-sa/4.0/">[Link]</a></p>
-  <script src="graficos.js"></script>
+
+<h2>Resumo</h2>
+<p>A democracia em larga escala tende a resultados medianos devido à agregação por mediana. O Teorema da Entropia Democrática formaliza matematicamente esta limitação estrutural, mostrando que quanto maior a população, menor a dispersão de Q_n, surgindo um ponto de entropia.</p>
+
+<h2>Definições</h2>
+<p><strong>Qualidade de Vida (Q):</strong> índice em [0,100], inspirado no IDH, refletindo saúde, educação e rendimento.</p>
+<p><strong>Mínimo Denominador Comum (MDC):</strong> decisão coletiva, modelada como a mediana das preferências individuais p_i ∈ [0,1].</p>
+<p><strong>Entropia:</strong> estabilização de Q_n em torno de 50, com SD(Q_n) ≈ 0.</p>
+<p><strong>Escala (n):</strong> número de votantes. Ponto crítico onde a variabilidade de Q_n se torna insignificante.</p>
+
+<h2>Enunciado</h2>
+<p>Em sistemas democráticos majoritários, a pressão por coesão leva decisões coletivas à mediana das preferências individuais, subotimizando Q. À medida que n aumenta, Q_n estabiliza em ~50, atingindo entropia absoluta.</p>
+
+<h2>Fórmula Matemática</h2>
+<div class="formula">
+Q<sub>n</sub> = 100 &times; med(p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>n</sub>)<br>
+σ(Q<sub>n</sub>) = 50 / (&radic;&mu; &radic;n;)
+</div>
+
+<h2>Simulação Interativa</h2>
+<label>Distribuição de preferências: 
+<select id="distType">
+  <option value="normal">Normal (µ=0.5, σ=0.2)</option>
+  <option value="uniform">Uniforme [0,1]</option>
+  <option value="beta">Beta (2,5)</option>
+</select>
+</label>
+
+<canvas id="entropyChart"></canvas>
+
+<div class="license">
+<p>© Lara Raquel Rodrigues Branco Arsénio (CC BY-SA 4.0)</p>
+</div>
+</div>
+
+<script>
+// Funções matemáticas
+function randomNormal(mean=0.5,stdDev=0.2){
+    const u1=Math.random(), u2=Math.random();
+    const z=Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+    return mean+stdDev*z;
+}
+function randomUniform(){ return Math.random(); }
+function randomBeta(a,b){
+    let u=Math.random();
+    return Math.pow(u,1/a)/(Math.pow(u,1/a)+Math.pow(1-u,1/b));
+}
+function median(values){
+    values.sort((a,b)=>a-b);
+    const half=Math.floor(values.length/2);
+    return values.length%2 ? values[half] : (values[half-1]+values[half])/2;
+}
+function simulateQn(n,sims,distType){
+    const results=[];
+    for(let s=0;s<sims;s++){
+        const props=[];
+        for(let j=0;j<n;j++){
+            let pi;
+            if(distType==='normal'){ pi=Math.min(Math.max(randomNormal(),0),1);}
+            else if(distType==='uniform'){ pi=randomUniform();}
+            else if(distType==='beta'){ pi=Math.min(Math.max(randomBeta(2,5),0),1);}
+            props.push(pi);
+        }
+        results.push(100*median(props));
+    }
+    return results;
+}
+
+// Configurações
+const sampleSizes=[100,5000,20000,100000];
+const simsPerN=100;
+const colors=['blue','green','orange','red'];
+let chart=null;
+
+// Função para criar/atualizar gráfico
+function updateChart(){
+    const distType=document.getElementById('distType').value;
+    const labels=Array.from({length:simsPerN},(_,i)=>i+1);
+    const datasets=[];
+
+    sampleSizes.forEach((n,idx)=>{
+        const qValues=simulateQn(n,simsPerN,distType);
+        const meanQ=qValues.reduce((a,b)=>a+b,0)/qValues.length;
+        const sdQ=Math.sqrt(qValues.reduce((a,b)=>a+Math.pow(b-meanQ,2),0)/qValues.length);
+
+        datasets.push({
+            label:`n=${n} (média)`,
+            data:Array(simsPerN).fill(meanQ),
+            borderColor:colors[idx],
+            fill:false,
+            tension:0.2,
+            pointRadius:0
+        });
+
+        datasets.push({
+            label:`n=${n} (±SD)`,
+            data:Array(simsPerN).fill(meanQ+sdQ),
+            borderColor:'transparent',
+            backgroundColor:colors[idx]+'33',
+            fill:'+1',
+            pointRadius:0
+        });
+    });
+
+    datasets.push({
+        label:'Ponto de entropia (50)',
+        data:Array(simsPerN).fill(50),
+        borderColor:'black',
+        borderDash:[5,5],
+        fill:false,
+        pointRadius:0
+    });
+
+    if(chart) chart.destroy();
+    const ctx=document.getElementById('entropyChart').getContext('2d');
+    chart=new Chart(ctx,{
+        type:'line',
+        data:{labels:labels,datasets:datasets},
+        options:{
+            responsive:true,
+            plugins:{tooltip:{enabled:true,mode:'index',intersect:false},legend:{display:true,position:'top'}},
+            scales:{x:{title:{display:true,text:'Replicação'}},y:{title:{display:true,text:'Q_n'},min:0,max:100}}
+        }
+    });
+}
+
+// Inicializar
+updateChart();
+document.getElementById('distType').addEventListener('change',updateChart);
+</script>
 </body>
 </html>

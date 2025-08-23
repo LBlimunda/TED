@@ -76,7 +76,7 @@ function median(values) {
   return values.length%2 ? values[half] : (values[half-1]+values[half])/2;
 }
 
-function simulateQn(n, numSims=500) { // menos sims para animação rápida
+function simulateQn(n, numSims=300) {
   const qnValues = [];
   for(let i=0;i<numSims;i++){
     const props = [];
@@ -111,7 +111,25 @@ const chart = new Chart(ctx,{
   },
   options:{
     responsive:true,
-    animation:{ duration:300 },
+    animation:{ duration:500 }, // animação mais lenta
+    plugins:{
+      tooltip:{
+        enabled:true,
+        callbacks:{
+          label: function(context) {
+            return `Frequência: ${context.raw}`;
+          },
+          afterLabel: function(context) {
+            const data = chart.data.datasets[0].data;
+            const total = data.reduce((a,b)=>a+b,0);
+            const mean = data.reduce((a,b,i)=>a+i*b,0)/total;
+            const variance = data.reduce((a,b,i)=>a+b*Math.pow(i*5-mean,2),0)/total;
+            const stdDev = Math.sqrt(variance);
+            return `Média ~${mean.toFixed(1)}, SD ~${stdDev.toFixed(1)}`;
+          }
+        }
+      }
+    },
     scales:{
       x:{ title:{display:true,text:'Q_n'} },
       y:{ beginAtZero:true, title:{display:true,text:'Frequência'} }
@@ -123,18 +141,18 @@ let currentN = 1;
 const maxN = 1000;
 
 function updateChart(){
-  document.getElementById('currentN').textContent = `Tamanho da amostra n = ${currentN}`;
   const qnValues = simulateQn(currentN, 300);
   chart.data.datasets[0].data = createHistogramData(qnValues);
   chart.update();
-  currentN += Math.floor(currentN*0.05)+1; // aumenta n exponencialmente para ver efeito rápido
+  currentN += Math.floor(currentN*0.05)+1; // aumento gradual
   if(currentN <= maxN){
-    requestAnimationFrame(updateChart);
+    setTimeout(updateChart, 700); // atualização mais lenta
   }
 }
 
 updateChart();
 </script>
+
 </body>
 </html>
 

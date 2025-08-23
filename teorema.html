@@ -6,57 +6,60 @@
 <title>Teorema da Entropia Democrática</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-body { font-family: Arial, sans-serif; margin:20px; background:#f4f4f4; color:#333; }
-.container { max-width: 1000px; margin:auto; background:white; padding:20px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1);}
-h1,h2,h3 { color:#2c3e50; }
-.formula { background:#ecf0f1; padding:10px; border-left:5px solid #3498db; font-family: monospace; margin:10px 0;}
-canvas { width:100%; height:450px; margin-top:20px; }
-.license { text-align:center; font-size:0.9em; margin-top:20px; color:#666; }
-label { display:block; margin:10px 0; }
+body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+.container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+h1,h2,h3 { color: #34495e; text-align: center; }
+.formula { background: #ecf0f1; padding: 10px; border-left: 5px solid #3498db; margin: 10px 0; font-family: monospace; }
+.simulation { margin: 20px 0; }
+input { padding: 8px; margin: 5px; }
+canvas { max-width: 100%; height: 300px; }
+.license, .license-initial { text-align: center; margin: 20px 0; font-size: 0.9em; color: #666; }
+@media (max-width: 600px) { .container { padding: 10px; } canvas { height: 200px; } }
 </style>
 </head>
 <body>
 <div class="container">
 <h1>Teorema da Entropia Democrática</h1>
 
-<div class="license">
+<div class="license-initial">
 <p>© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Inclui Chart.js (<a href="https://github.com/chartjs/Chart.js/blob/master/LICENSE">MIT License</a>).</p>
 </div>
 
 <h2>Resumo</h2>
-<p>A democracia em larga escala tende a resultados medianos devido à agregação por mediana. O Teorema da Entropia Democrática formaliza matematicamente esta limitação estrutural, mostrando que quanto maior a população, menor a dispersão de Q_n, surgindo um ponto de entropia.</p>
+<p>A democracia em larga escala é um sistema estruturalmente limitado que converge para resultados medíocres...</p>
 
 <h2>Definições</h2>
-<p><strong>Qualidade de Vida (Q):</strong> índice em [0,100], inspirado no IDH, refletindo saúde, educação e rendimento.</p>
-<p><strong>Mínimo Denominador Comum (MDC):</strong> decisão coletiva, modelada como a mediana das preferências individuais p_i ∈ [0,1].</p>
-<p><strong>Entropia:</strong> estabilização de Q_n em torno de 50, com SD(Q_n) ≈ 0.</p>
-<p><strong>Escala (n):</strong> número de votantes. Ponto crítico onde a variabilidade de Q_n se torna insignificante.</p>
+<p><strong>Qualidade de Vida (Q):</strong> Índice em [0, 100]...</p>
+<p><strong>Mínimo Denominador Comum (MDC):</strong> Decisão coletiva, mediana das preferências individuais...</p>
+<p><strong>Entropia:</strong> Estagnação de Q em valores medianos (~50)...</p>
+<p><strong>Escala (n):</strong> Número de votantes...</p>
 
 <h2>Enunciado</h2>
-<p>Em sistemas democráticos majoritários, a pressão por coesão leva decisões coletivas à mediana das preferências individuais, subotimizando Q. À medida que n aumenta, Q_n estabiliza em ~50, atingindo entropia absoluta.</p>
+<p>Nos sistemas democráticos majoritários...</p>
 
-<h2>Fórmula Matemática</h2>
+<h2>Fórmulas Matemáticas</h2>
 <div class="formula">
-Q<sub>n</sub> = 100 &times; med(p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>n</sub>)<br>
-σ(Q<sub>n</sub>) = 50 / (&radic;&mu; &radic;n;)
+Fórmula da Entropia Democrática:<br>
+Q_n = 100 × med(p_1, p_2, ..., p_n)<br>
+σ(Q_n) = 50 / (√μ × √n)
 </div>
 
-<h2>Simulação Interativa</h2>
-<label>Distribuição de preferências: 
-<select id="distType">
-  <option value="normal">Normal (µ=0.5, σ=0.2)</option>
-  <option value="uniform">Uniforme [0,1]</option>
-  <option value="beta">Beta (2,5)</option>
-</select>
-</label>
+<h2>Simulação</h2>
+<div class="simulation">
+<label>Tamanho da Amostra (n): <input type="number" id="sampleSize" value="100" min="1" max="1000"></label><br>
+<label>Proporção Populacional (μ): <input type="number" id="populationProp" value="0.5" min="0.01" max="0.99" step="0.01"></label>
+<p id="result"></p>
+</div>
 
-<canvas id="entropyChart"></canvas>
-<h2>Cálculo do Ponto de Entropia (n_crit)</h2>
+<h2>Gráficos</h2>
+<canvas id="histogramChart"></canvas>
+<canvas id="distributionChart"></canvas>
+
+<h2>Ponto de Entropia (n_crit)</h2>
 <div class="formula">
 n<sub>crit</sub> = menor n tal que SD(Q<sub>n</sub>) ≤ 1
 </div>
-<p>O gráfico abaixo mostra SD(Q<sub>n</sub>) em função de n. A linha preta tracejada indica o limiar de entropia (SD=1) e o ponto roxo mostra o n<sub>crit</sub>.</p>
-
+<p>O gráfico abaixo mostra SD(Q<sub>n</sub>) em função de n. Linha preta tracejada = limiar de entropia (SD=1), ponto vermelho = n<sub>crit</sub>.</p>
 <canvas id="entropyPointChart"></canvas>
 
 <div class="license">
@@ -65,107 +68,117 @@ n<sub>crit</sub> = menor n tal que SD(Q<sub>n</sub>) ≤ 1
 </div>
 
 <script>
-// Funções matemáticas
-function randomNormal(mean=0.5,stdDev=0.2){
-    const u1=Math.random(), u2=Math.random();
-    const z=Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
-    return mean+stdDev*z;
+// --- Funções auxiliares ---
+function randomNormal(mean, stdDev) {
+    const u1 = Math.random(), u2 = Math.random();
+    const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    return mean + stdDev * z;
 }
-function randomUniform(){ return Math.random(); }
-function randomBeta(a,b){
-    let u=Math.random();
-    return Math.pow(u,1/a)/(Math.pow(u,1/a)+Math.pow(1-u,1/b));
+
+function median(values) {
+    const arr = [...values].sort((a,b)=>a-b);
+    const half = Math.floor(arr.length/2);
+    return arr.length %2 ? arr[half] : (arr[half-1]+arr[half])/2;
 }
-function median(values){
-    values.sort((a,b)=>a-b);
-    const half=Math.floor(values.length/2);
-    return values.length%2 ? values[half] : (values[half-1]+values[half])/2;
+
+function fMu(mu){ return Math.sqrt(mu); }
+
+function createHistogramData(values, binSize){
+    const bins = Array(20).fill(0);
+    values.forEach(val => bins[Math.min(Math.floor(val/binSize),19)]++);
+    return bins;
 }
-function simulateQn(n,sims,distType){
-    const results=[];
-    for(let s=0;s<sims;s++){
-        const props=[];
+
+function generateNormalCurve(mean,stdDev,minX,maxX,numPoints){
+    const step=(maxX-minX)/(numPoints-1);
+    const xVals=Array.from({length:numPoints},(_,i)=>minX+i*step);
+    const yVals=xVals.map(x=>(1/(stdDev*Math.sqrt(2*Math.PI)))*Math.exp(-0.5*((x-mean)/stdDev)**2));
+    return {x:xVals, y:yVals};
+}
+
+function simulateQn(n,numSims,distType='normal'){
+    const qnVals=[];
+    for(let i=0;i<numSims;i++){
+        let props=[];
         for(let j=0;j<n;j++){
-            let pi;
-            if(distType==='normal'){ pi=Math.min(Math.max(randomNormal(),0),1);}
-            else if(distType==='uniform'){ pi=randomUniform();}
-            else if(distType==='beta'){ pi=Math.min(Math.max(randomBeta(2,5),0),1);}
-            props.push(pi);
+            let p = distType==='normal'? randomNormal(0.5,0.2) : Math.random();
+            p = Math.min(Math.max(p,0),1);
+            props.push(p);
         }
-        results.push(100*median(props));
+        qnVals.push(100*median(props));
     }
-    return results;
+    return qnVals;
 }
 
-// Configurações
-const sampleSizes=[100,5000,20000,100000];
-const simsPerN=100;
-const colors=['blue','green','orange','red'];
-let chart=null;
+// --- Gráficos principais ---
+let histogramChart, normalChart, entropyChart;
 
-// Função para criar/atualizar gráfico
 function updateChart(){
-    const distType=document.getElementById('distType').value;
-    const labels=Array.from({length:simsPerN},(_,i)=>i+1);
-    const datasets=[];
+    const n = parseInt(document.getElementById('sampleSize').value) || 100;
+    const mu = parseFloat(document.getElementById('populationProp').value) || 0.5;
+    const numSims = 500;
+    const qnValues = simulateQn(n,numSims);
 
-    sampleSizes.forEach((n,idx)=>{
-        const qValues=simulateQn(n,simsPerN,distType);
-        const meanQ=qValues.reduce((a,b)=>a+b,0)/qValues.length;
-        const sdQ=Math.sqrt(qValues.reduce((a,b)=>a+Math.pow(b-meanQ,2),0)/qValues.length);
+    const meanQn = qnValues.reduce((a,b)=>a+b,0)/numSims;
+    const stdDevQn = Math.sqrt(qnValues.reduce((a,b)=>a+Math.pow(b-meanQn,2),0)/numSims);
+    const theoreticalStdDev = 50/(fMu(mu)*Math.sqrt(n));
+    const relativeError = theoreticalStdDev>0 ? Math.abs(stdDevQn-theoreticalStdDev)/theoreticalStdDev*100 : 0;
 
-        datasets.push({
-            label:`n=${n} (média)`,
-            data:Array(simsPerN).fill(meanQ),
-            borderColor:colors[idx],
-            fill:false,
-            tension:0.2,
-            pointRadius:0
-        });
+    document.getElementById('result').innerHTML = `
+        <strong>Resultados:</strong><br>
+        Média de Q_n: ${meanQn.toFixed(2)}<br>
+        Desvio Padrão Simulado: ${stdDevQn.toFixed(2)}<br>
+        Desvio Padrão Teórico: ${theoreticalStdDev.toFixed(2)}<br>
+        Erro Relativo: ${relativeError.toFixed(2)}%
+    `;
 
-        datasets.push({
-            label:`n=${n} (±SD)`,
-            data:Array(simsPerN).fill(meanQ+sdQ),
-            borderColor:'transparent',
-            backgroundColor:colors[idx]+'33',
-            fill:'+1',
-            pointRadius:0
-        });
+    const histCtx = document.getElementById('histogramChart').getContext('2d');
+    if(histogramChart) histogramChart.destroy();
+    histogramChart = new Chart(histCtx,{
+        type:'bar',
+        data:{
+            labels:Array.from({length:20},(_,i)=>i*5),
+            datasets:[{
+                label:'Distribuição de Q_n',
+                data:createHistogramData(qnValues,5),
+                backgroundColor:'rgba(54,162,235,0.5)',
+                borderColor:'rgba(54,162,235,1)',
+                borderWidth:1
+            }]
+        },
+        options:{ scales:{ y:{beginAtZero:true}, x:{title:{display:true,text:'Q_n'}} } }
     });
 
-    datasets.push({
-        label:'Ponto de entropia (50)',
-        data:Array(simsPerN).fill(50),
-        borderColor:'black',
-        borderDash:[5,5],
-        fill:false,
-        pointRadius:0
-    });
-
-    if(chart) chart.destroy();
-    const ctx=document.getElementById('entropyChart').getContext('2d');
-    chart=new Chart(ctx,{
+    const normalCtx=document.getElementById('distributionChart').getContext('2d');
+    if(normalChart) normalChart.destroy();
+    const normalCurve = generateNormalCurve(100*mu,theoreticalStdDev,0,100,100);
+    normalChart = new Chart(normalCtx,{
         type:'line',
-        data:{labels:labels,datasets:datasets},
-        options:{
-            responsive:true,
-            plugins:{tooltip:{enabled:true,mode:'index',intersect:false},legend:{display:true,position:'top'}},
-            scales:{x:{title:{display:true,text:'Replicação'}},y:{title:{display:true,text:'Q_n'},min:0,max:100}}
-        }
+        data:{
+            labels:normalCurve.x,
+            datasets:[{
+                label:'Distribuição Normal Teórica',
+                data:normalCurve.y,
+                borderColor:'rgba(255,99,132,1)',
+                backgroundColor:'rgba(255,99,132,0.2)',
+                fill:true,
+                tension:0.4
+            }]
+        },
+        options:{ scales:{ y:{beginAtZero:true}, x:{title:{display:true,text:'Q_n'}} } }
     });
 }
-// --- Novo cálculo n_crit com anotação visual ---
-function updateEntropyPointChart(){
-    const distType=document.getElementById('distType').value;
-    const nValues=[100,500,1000,5000,20000,100000];
-    const simsPerN=500;
-    const sdData=[];
 
+// --- Gráfico de n_crit ---
+function updateEntropyPointChart(){
+    const nValues=[100,500,1000,5000,20000,100000];
+    const simsPerN=300;
+    const sdData=[];
     nValues.forEach(n=>{
-        const qSamples=simulateQn(n,simsPerN,distType);
-        const meanQ=qSamples.reduce((a,b)=>a+b,0)/qSamples.length;
-        const sdQ=Math.sqrt(qSamples.reduce((a,b)=>a+Math.pow(b-meanQ,2),0)/qSamples.length);
-        sdData.push(sdQ);
+        const qn=simulateQn(n,simsPerN);
+        const mean=qn.reduce((a,b)=>a+b,0)/qn.length;
+        const sd=Math.sqrt(qn.reduce((a,b)=>a+Math.pow(b-mean,2),0)/qn.length);
+        sdData.push(sd);
     });
 
     const threshold=1;
@@ -173,36 +186,15 @@ function updateEntropyPointChart(){
     const nCritIndex=nValues.indexOf(nCrit);
 
     const ctx=document.getElementById('entropyPointChart').getContext('2d');
-    if(window.entropyChart) window.entropyChart.destroy();
-    window.entropyChart=new Chart(ctx,{
+    if(entropyChart) entropyChart.destroy();
+    entropyChart=new Chart(ctx,{
         type:'line',
         data:{
             labels:nValues,
             datasets:[
-                {
-                    label:'SD(Q_n)',
-                    data:sdData,
-                    borderColor:'purple',
-                    fill:false,
-                    tension:0.2,
-                    pointRadius:5
-                },
-                {
-                    label:'Limiar de entropia (SD=1)',
-                    data:Array(nValues.length).fill(threshold),
-                    borderColor:'black',
-                    borderDash:[5,5],
-                    fill:false,
-                    pointRadius:0
-                },
-                {
-                    label:'Ponto de entropia n_crit',
-                    data:sdData.map((v,i)=>i===nCritIndex?v:null),
-                    borderColor:'red',
-                    backgroundColor:'red',
-                    pointRadius:8,
-                    showLine:false
-                }
+                { label:'SD(Q_n)', data:sdData, borderColor:'purple', fill:false, tension:0.2, pointRadius:5 },
+                { label:'Limiar de entropia (SD=1)', data:Array(nValues.length).fill(threshold), borderColor:'black', borderDash:[5,5], fill:false, pointRadius:0 },
+                { label:'Ponto de entropia n_crit', data:sdData.map((v,i)=>i===nCritIndex?v:null), borderColor:'red', backgroundColor:'red', pointRadius:8, showLine:false }
             ]
         },
         options:{
@@ -213,7 +205,7 @@ function updateEntropyPointChart(){
                     callbacks:{
                         label:function(context){
                             if(context.dataset.label==='Ponto de entropia n_crit'){
-                                return `n_crit = ${nCrit}, SD(Q_n)=${context.raw.toFixed(3)}`;
+                                return `n_crit=${nCrit}, SD(Q_n)=${context.raw.toFixed(3)}`;
                             }
                             return `${context.dataset.label}: ${context.raw.toFixed(3)}`;
                         }
@@ -222,7 +214,7 @@ function updateEntropyPointChart(){
                 legend:{display:true, position:'top'}
             },
             scales:{
-                x:{title:{display:true,text:'Tamanho da Amostra n'}, type:'log', ticks:{callback: function(val){return Number(val);}}},
+                x:{title:{display:true,text:'Tamanho da Amostra n'}, type:'log', ticks:{callback: val=>Number(val)}},
                 y:{title:{display:true,text:'SD(Q_n)'}, min:0}
             }
         }
@@ -230,14 +222,14 @@ function updateEntropyPointChart(){
 
     console.log("Ponto de entropia aproximado n_crit:", nCrit);
 }
+
+// --- Inicialização unificada ---
 function updateAllCharts(){
     updateChart();
     updateEntropyPointChart();
 }
-
-// Inicialização
-updateAllCharts();
-document.getElementById('distType').addEventListener('change', updateAllCharts);
+document.addEventListener('DOMContentLoaded', updateAllCharts);
 </script>
 </body>
 </html>
+

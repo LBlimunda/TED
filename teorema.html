@@ -60,6 +60,60 @@
  
 <canvas id="entropyComparisonChart"></canvas>
 <p id="currentN"></p>
+
+<h2>Cálculo da Variabilidade e Ponto Crítico</h2>
+<div class="formula">
+    <p><strong>Fórmula da variância:</strong></p>
+    <p>σ(Q<sub>n</sub>) = 50 / ( f(μ) · √n )</p>
+
+    <p><strong>Condição para entropia absoluta:</strong></p>
+    <p>σ(Q<sub>n</sub>) ≤ 1</p>
+
+    <p><strong>Derivação do ponto crítico:</strong></p>
+    <p>
+        √n ≥ 50 / f(μ)<br>
+        N<sub>crit</sub> ≥ (50 / f(μ))²
+    </p>
+
+    <p><strong>Exemplo numérico (f(μ) ≈ 0.8):</strong></p>
+    <ul>
+        <li>N<sub>crit</sub> ≈ (50 / 0.8)² = 3906</li>
+    </ul>
+
+    <p><strong>Comparação de σ(Q<sub>n</sub>) para diferentes n:</strong></p>
+    <table border="1" cellpadding="4" cellspacing="0">
+        <thead>
+            <tr>
+                <th>n</th>
+                <th>σ(Q<sub>n</sub>)</th>
+                <th>Observação</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>100</td>
+                <td>50 / (0.8·√100) ≈ 6.25</td>
+                <td>Muito acima do critério</td>
+            </tr>
+            <tr>
+                <td>5000</td>
+                <td>50 / (0.8·√5000) ≈ 0.44</td>
+                <td>Abaixo do critério → entropia praticamente garantida</td>
+            </tr>
+            <tr>
+                <td>20000</td>
+                <td>50 / (0.8·√20000) ≈ 0.14</td>
+                <td>Entropia absoluta confirmada</td>
+            </tr>
+            <tr>
+                <td>100000</td>
+                <td>50 / (0.8·√100000) ≈ 0.056</td>
+                <td>Entropia total, praticamente sem variabilidade</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
 <div class="license">
             <p>© Lara Raquel Rodrigues Branco Arsénio (CC BY-SA 4.0)</p>
 </div>
@@ -159,42 +213,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 });
-// === cálculo Ncrit ===
-(function(){
-    // cria um div para mostrar resultados, se ainda não existir
-    let outputDiv = document.getElementById('ncrit-output');
-    if (!outputDiv) {
-        outputDiv = document.createElement('div');
-        outputDiv.id = 'ncrit-output';
-        outputDiv.style.background = "#ecf0f1";
-        outputDiv.style.padding = "10px";
-        outputDiv.style.borderLeft = "5px solid #3498db";
-        outputDiv.style.margin = "20px 0";
-        outputDiv.style.fontFamily = "monospace";
-        document.body.appendChild(outputDiv);
-    }
-
-    // parâmetros do modelo
-    const f_mu = 0.8;       // densidade na mediana
-    const targetSD = 1;     // critério de entropia absoluta
-    const nCrit = Math.ceil(Math.pow(50/(f_mu*targetSD),2));
-
-    const sampleSizesCrit = [100, 5000, 20000, 100000];
-
-    let html = "";
-    html += "<p><strong>Fórmula:</strong> σ(Q<sub>n</sub>) = 50 / ( f(μ) · √n )</p>";
-    html += "<p><strong>Condição:</strong> σ(Q<sub>n</sub>) ≤ 1</p>";
-    html += `<p><strong>Ponto crítico:</strong> N<sub>crit</sub> = ${nCrit}</p>`;
-    html += "<p><u>Comparação com os n simulados:</u></p><ul>";
-
-    sampleSizesCrit.forEach(n => {
-        const sd = 50 / (f_mu * Math.sqrt(n));
-        html += `<li>n = ${n}: σ(Q<sub>n</sub>) ≈ ${sd.toFixed(2)}</li>`;
-    });
-    html += "</ul>";
-
-    outputDiv.innerHTML = html;
-})();
 
 </script>
 

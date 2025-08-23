@@ -63,9 +63,8 @@
 <h1>Animação da Entropia Democrática</h1>
 <canvas id="animatedChart"></canvas>
 <p id="currentN"></p>
-<script>
-
- document.addEventListener('DOMContentLoaded', function(){
+        <script>
+document.addEventListener('DOMContentLoaded', function(){
 
     // Criar canvas e parágrafos se não existirem
     if (!document.getElementById('animatedChart')) {
@@ -73,6 +72,8 @@
 
         const canvas = document.createElement('canvas');
         canvas.id = 'animatedChart';
+        canvas.style.maxWidth = '800px';
+        canvas.style.height = '400px';
         container.appendChild(canvas);
 
         const infoP = document.createElement('p');
@@ -83,6 +84,7 @@
         const legendP = document.createElement('p');
         legendP.id = 'chartLegend';
         legendP.style.maxWidth = '800px';
+        legendP.style.marginTop = '10px';
         container.appendChild(legendP);
     }
 
@@ -138,7 +140,7 @@
         },
         options:{
             responsive:true,
-            animation:{duration:500},
+            animation:{duration:700},
             plugins:{ tooltip:{enabled:true} },
             scales:{
                 x:{ title:{display:true,text:'Tamanho da amostra n'} },
@@ -157,20 +159,22 @@
         chart.data.labels.push(currentN);
         chart.data.datasets[0].data.push(qn);
 
-        const meanQ = chart.data.datasets[0].data.reduce((a,b)=>a+b,0) / chart.data.datasets[0].data.length;
+        // Média acumulada
+        const meanQ = chart.data.datasets[0].data.reduce((a,b)=>a+b,0)/chart.data.datasets[0].data.length;
         chart.data.datasets[1].data.push(meanQ);
 
         chart.update();
 
-        // Atualizar info e legenda
+        // Texto informativo
         document.getElementById('chartInfo').textContent =
             `Tamanho da amostra n = ${currentN}, Q_n atual ≈ ${qn.toFixed(1)}, Média acumulada ≈ ${meanQ.toFixed(1)}`;
 
+        // Legenda explicativa
         document.getElementById('chartLegend').innerHTML = `
-            <strong>Legenda:</strong> Este gráfico mostra a evolução de Q_n = 100 × mediana(p_i)
-            à medida que n aumenta. Inicialmente, Q_n varia mais devido à dispersão das preferências individuais.
-            À medida que n cresce, Q_n converge para aproximadamente 50, ilustrando o ponto de entropia do sistema democrático.
-            A linha vermelha tracejada indica a média acumulada de Q_n, evidenciando a estabilização do valor central.
+            <strong>Legenda:</strong> O gráfico representa a evolução de Q_n = 100 × mediana(p_i) 
+            à medida que o tamanho da amostra n aumenta. Inicialmente, Q_n varia mais devido à dispersão das preferências individuais.
+            À medida que n cresce, Q_n converge para aproximadamente 50, evidenciando o ponto de entropia do sistema democrático.
+            A linha vermelha tracejada mostra a média acumulada de Q_n, reforçando a estabilização do valor central.
         `;
 
         if(currentN < maxN){
@@ -180,11 +184,9 @@
     }
 
     updateChart();
-
 });
-
-    
 </script>
+
 
 </body>
 </html>

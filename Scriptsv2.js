@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const relativeError = theoreticalStdDev > 0
         ? Math.abs(stdDevQn - theoreticalStdDev) / theoreticalStdDev * 100
         : 0;
-
+window.alert('teste v2');
     // Atualizar resultados
     document.getElementById('result').innerHTML = `
         <strong>Resultados:</strong><br>

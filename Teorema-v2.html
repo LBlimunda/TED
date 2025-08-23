@@ -3,248 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste do Teorema</title>
-    <!-- MathJax para fórmulas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
-    <!-- Chart.js para gráficos (minificado, ~60 KB) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <title>Teorema da Entropia Democrática</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        canvas { max-width: 100%; max-height: 300px; }
-        .old-school { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 10px; border: 1px solid #999; }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; }
+        h2 { color: #34495e; }
+        .formula { background: #ecf0f1; padding: 10px; border-left: 5px solid #3498db; margin: 10px 0; font-family: monospace; }
+        .simulation { margin: 20px 0; }
+        input, button { padding: 8px; margin: 5px; }
+        canvas { max-width: 100%; height: 300px; }
+        @media (max-width: 600px) { .container { padding: 10px; } canvas { height: 200px; } }
     </style>
 </head>
 <body>
-    <h2>Teorema da Qualidade de Vida</h2>
-    <p>Fórmulas (LaTeX):</p>
-    <p>
-        1. Agrupamento: \[ Q_n = 100 \cdot \text{med}(m_j), \quad m_j = \text{med}(p_{j1}, \dots, p_{jg}), \quad g = \min(n, 1000), \quad m = \lceil n / g \rceil, \quad \sigma(Q_n) = \frac{50}{f(\mu) \sqrt{n}} \]
-    </p>
-    <p>
-        2. Reformulada: \[ Q_n = 100 \cdot \text{med}(p_1, p_2, \dots, p_n), \quad \sigma(Q_n) = \frac{50}{f(\mu) \sqrt{n}} \]
-    </p>
-    <p class="old-school">Fórmulas (Old School):<br>
-        1. Agrupamento: Q<sub>n</sub> = 100 &times; med(m<sub>j</sub>), m<sub>j</sub> = med(p<sub>j1</sub>, ..., p<sub>jg</sub>), g = min(n, 1000), m = &lceil;n / g&rceil;, &sigma;(Q<sub>n</sub>) = 50 / (f(&mu;) &radic;n)<br>
-        2. Reformulada: Q<sub>n</sub> = 100 &times; med(p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>n</sub>), &sigma;(Q<sub>n</sub>) = 50 / (f(&mu;) &radic;n)
-    </p>
-    <h3>Simulação</h3>
-    <p>Distribuição: <select id="distribution">
-        <option value="uniform" selected>Uniforme [0, 1]</option>
-        <option value="beta">Beta(2, 2)</option>
-    </select></p>
-    <p>Número de votantes (n): <input type="number" id="nVoters" value="2000" min="50" max="1000000"></p>
-    <p>Número de simulações: <input type="number" id="nSim" value="500" min="100" max="5000"></p>
-    <button onclick="runSimulation()">Simular</button>
-    <h3>Resultados</h3>
-    <p id="results"></p>
-    <h3>Visualização</h3>
-    <canvas id="graficoMediaQ"></canvas>
-    <canvas id="graficoDesvioQ"></canvas>
-    <p class="license">© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob CC BY-SA 4.0. Cite a autora em qualquer uso.</p>
-
-    <script>
-        // Copyright (c) Lara Raquel Rodrigues Branco Arsénio, 2025
-        // Licensed under CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/
-        // Inclui Chart.js (MIT License): https://github.com/chartjs/Chart.js/blob/master/LICENSE
-
-        document.addEventListener('DOMContentLoaded', function () {
-            try {
-                const canvasMediaQ = document.getElementById('graficoMediaQ');
-                const canvasDesvioQ = document.getElementById('graficoDesvioQ');
-                if (!canvasMediaQ || !canvasDesvioQ) throw new Error('Elementos canvas não encontrados');
-
-                // Função para calcular a mediana
-                function median(values) {
-                    const sorted = [...values].sort((a, b) => a - b);
-                    const mid = Math.floor(sorted.length / 2);
-                    return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
-                }
-
-                // Função para gerar Beta(2,2)
-                function betaRandom(alpha, beta, size) {
-                    const u = new Array(size).fill().map(() => Math.random());
-                    return u.map(() => {
-                        let x = 0;
-                        for (let i = 0; i < alpha; i++) x += Math.random();
-                        for (let i = 0; i < beta; i++) x += Math.random();
-                        return x / (alpha + beta);
-                    });
-                }
-
-                // Simulação para votação direta (Reformulada)
-                function simularDemocracia(n, testes) {
-                    const dist = document.getElementById('distribution').value;
-                    const generateData = dist === 'uniform' 
-                        ? () => new Array(n).fill().map(() => Math.random())
-                        : () => betaRandom(2, 2, n);
-                    const fMu = dist === 'uniform' ? 1.0 : 1.5;
-
-                    let Qs = [];
-                    for (let i = 0; i < testes; i++) {
-                        const data = generateData();
-                        Qs.push(100 * median(data));
-                    }
-                    const mediaQ = Qs.reduce((sum, q) => sum + q, 0) / testes;
-                    const desvioQ = Math.sqrt(Qs.reduce((sum, q) => sum + (q - mediaQ) ** 2, 0) / testes);
-                    const desvioQTeorico = 50 / (fMu * Math.sqrt(n));
-                    return { mediaQ, desvioQ, desvioQTeorico };
-                }
-
-                // Simulação para mega-votos (Agrupamento)
-                function simularMegaVotos(n, tamanhoGrupo, testes) {
-                    const dist = document.getElementById('distribution').value;
-                    const generateData = dist === 'uniform' 
-                        ? () => new Array(n).fill().map(() => Math.random())
-                        : () => betaRandom(2, 2, n);
-                    const fMu = dist === 'uniform' ? 1.0 : 1.5;
-
-                    let Qs = [];
-                    const m = Math.ceil(n / tamanhoGrupo);
-                    for (let i = 0; i < testes; i++) {
-                        const data = generateData();
-                        let megaPrefs = [];
-                        for (let j = 0; j < m; j++) {
-                            const start = j * tamanhoGrupo;
-                            const end = Math.min((j + 1) * tamanhoGrupo, n);
-                            megaPrefs.push(median(data.slice(start, end)));
-                        }
-                        Qs.push(100 * median(megaPrefs));
-                    }
-                    const mediaQ = Qs.reduce((sum, q) => sum + q, 0) / testes;
-                    const desvioQ = Math.sqrt(Qs.reduce((sum, q) => sum + (q - mediaQ) ** 2, 0) / testes);
-                    const desvioQTeorico = 50 / (fMu * Math.sqrt(n));
-                    return { mediaQ, desvioQ, desvioQTeorico };
-                }
-
-                // Gerar dados para gráficos
-                function gerarDadosGraficos() {
-                    const ns = [50, 200, 1256, 10000, 1000000];
-                    let mediasQ = [], desviosQ = [], desviosQMega = [], tamanhosGrupo = [];
-                    const dist = document.getElementById('distribution').value;
-                    const fMu = dist === 'uniform' ? 1.0 : 1.5;
-                    const rupturePoint = Math.ceil((50 / fMu) ** 2);
-
-                    ns.forEach(n => {
-                        const testes = n === 1256 ? 1000 : 500;
-                        const { mediaQ, desvioQ, desvioQTeorico } = simularDemocracia(n, testes);
-                        const tamanhoGrupo = Math.min(n, 1000);
-                        const { desvioQ: desvioQMega } = simularMegaVotos(n, tamanhoGrupo, testes);
-                        mediasQ.push(mediaQ);
-                        desviosQ.push(desvioQTeorico);
-                        desviosQMega.push(desvioQTeorico);
-                        tamanhosGrupo.push(tamanhoGrupo);
-                        console.log(`n=${n}, Q médio=${mediaQ.toFixed(2)}, Desvio Q=${desvioQTeorico.toFixed(2)}, Desvio Q (mega-votos, grupo=${tamanhoGrupo})=${desvioQTeorico.toFixed(2)}`);
-                    });
-
-                    return { ns, mediasQ, desviosQ, desviosQMega, tamanhosGrupo, rupturePoint };
-                }
-
-                // Função principal de simulação
-                function runSimulation() {
-                    const n = parseInt(document.getElementById('nVoters').value);
-                    const nSim = parseInt(document.getElementById('nSim').value);
-                    const dist = document.getElementById('distribution').value;
-                    const fMu = dist === 'uniform' ? 1.0 : 1.5;
-
-                    // Simula Q_n (Reformulada)
-                    const { mediaQ: Qn1Mean, desvioQ: sigmaQn1Empirical, desvioQTeorico: sigmaQn1Theoretical } = simularDemocracia(n, nSim);
-                    const rupturePoint = Math.ceil((50 / fMu) ** 2);
-
-                    // Simula Q_n (Agrupamento)
-                    const tamanhoGrupo = Math.min(n, 1000);
-                    const { mediaQ: Qn2Mean, desvioQ: sigmaQn2Empirical, desvioQTeorico: sigmaQn2Theoretical } = simularMegaVotos(n, tamanhoGrupo, nSim);
-
-                    // Exibe resultados
-                    document.getElementById('results').innerHTML = `
-                        <strong>Fórmula Reformulada:</strong><br>
-                        Q_n médio: ${Qn1Mean.toFixed(2)}<br>
-                        σ(Q_n) teórico: ${sigmaQn1Theoretical.toFixed(2)}<br>
-                        σ(Q_n) empírico: ${sigmaQn1Empirical.toFixed(2)}<br>
-                        Ponto de ruptura: ${rupturePoint}<br><br>
-                        <strong>Fórmula Agrupamento:</strong><br>
-                        Q_n médio: ${Qn2Mean.toFixed(2)}<br>
-                        σ(Q_n) teórico: ${sigmaQn2Theoretical.toFixed(2)}<br>
-                        σ(Q_n) empírico: ${sigmaQn2Empirical.toFixed(2)}<br>
-                        Ponto de ruptura: ${rupturePoint}
-                    `;
-
-                    // Gera gráficos
-                    const { ns, mediasQ, desviosQ, desviosQMega, tamanhosGrupo, rupturePoint } = gerarDadosGraficos();
-
-                    const ctx1 = canvasMediaQ.getContext('2d');
-                    new Chart(ctx1, {
-                        type: 'line',
-                        data: {
-                            labels: ns,
-                            datasets: [
-                                { label: 'Média de Q (Votação Direta)', data: mediasQ, borderColor: 'blue', fill: false, pointRadius: 5 },
-                                {
-                                    label: 'Faixa de Confiança (±SD)', 
-                                    data: mediasQ.map((mq, i) => [mq - desviosQ[i], mq + desviosQ[i]]),
-                                    borderColor: 'rgba(0, 0, 255, 0.2)', 
-                                    backgroundColor: 'rgba(0, 0, 255, 0.1)', 
-                                    fill: true, 
-                                    type: 'line', 
-                                    pointRadius: 0
-                                }
-                            ]
-                        },
-                        options: {
-                            responsive: true, 
-                            maintainAspectRatio: false, 
-                            scales: { 
-                                x: { title: { display: true, text: 'Escala (n)' } }, 
-                                y: { title: { display: true, text: 'Qualidade de Vida (Q)' }, min: 0, max: 100 } 
-                            },
-                            plugins: {
-                                title: { display: true, text: 'Convergência para o MDC: Votação Direta' },
-                                annotation: {
-                                    annotations: [{ 
-                                        type: 'line', 
-                                        xMin: rupturePoint, 
-                                        xMax: rupturePoint, 
-                                        borderColor: 'grey', 
-                                        borderWidth: 1, 
-                                        label: { content: 'Ponto de Ruptura', enabled: true } 
-                                    }]
-                                }
-                            }
-                        }
-                    });
-
-                    const ctx2 = canvasDesvioQ.getContext('2d');
-                    new Chart(ctx2, {
-                        type: 'line',
-                        data: {
-                            labels: ns,
-                            datasets: [
-                                { label: 'Desvio de Q (Votação Direta)', data: desviosQ, borderColor: 'red', fill: false, pointRadius: 5 },
-                                { label: 'Desvio de Q (Mega-Votos)', data: desviosQMega, borderColor: 'orange', fill: false, pointStyle: 'circle', pointRadius: 5, pointHoverRadius: 8 }
-                            ]
-                        },
-                        options: {
-                            responsive: true, 
-                            maintainAspectRatio: false, 
-                            scales: { 
-                                x: { title: { display: true, text: 'Escala (n)' } }, 
-                                y: { title: { display: true, text: 'Desvio de Q (Entropia)' }, min: 0, max: 15 } 
-                            },
-                            plugins: {
-                                title: { display: true, text: 'Mitigação da Entropia: Mega-Votos vs. Votação Direta' },
-                                tooltip: {
-                                    callbacks: { label: (context) => `${context.dataset.label}: ${context.parsed.y.toFixed(2)} (grupo=${tamanhosGrupo[context.dataIndex]})` }
-                                }
-                            }
-                        }
-                    });
-                }
-
-                // Executa a simulação no carregamento da página
-                runSimulation();
-            } catch (error) {
-                console.error('Erro ao renderizar gráficos:', error);
-            }
-        });
-    </script>
+    <div class="container">
+        <h1>Teorema da Entropia Democrática</h1>
+        
+        <h2>Resumo</h2>
+        <p>A democracia em larga escala é um sistema estruturalmente limitado que converge para resultados medíocres, devido à qualidade do voto coletivo, aqui quantificada pela variável Qualidade de Vida (Q), que traduz, de forma abstrata e independente de contextos regionais (Europa, Centro, Desenvolvimento), o objetivo de melhoria global da qualidade de vida. A pressão por coesão grupal conduz as decisões coletivas ao mínimo denominador comum (MDC), comprometendo Q, que estabiliza em valores medianos (~50 numa escala de 0 a 100). Quanto maior a escala (n), isto é, o número de votantes, mais restritivos são os resultados, com entropia absoluta (estabilização de Q com desvio SD(Q) ≤ 1) a partir de um ponto crítico identificado dinamicamente. Simulações em JavaScript validam esta disfuncionalidade em populações numerosas, como a União Europeia (n = 500M). A disfuncionalidade é agravada por vulnerabilidades sistémicas, como intrusão, corrupção, governos sombra e lobbies desregulados. Este teorema demonstra a impossibilidade matemática de alcançar resultados ótimos em larga escala, sugerindo a necessidade de reduzir a escala ou adotar sistemas alternativos.</p>
+        
+        <h2>Definições</h2>
+        <p><strong>Qualidade de Vida (Q):</strong> Índice em [0, 100], inspirado no Índice de Desenvolvimento Humano (IDH), abrangendo saúde, educação e rendimento. Exemplo: Q = 100 representa condições ideais; Q = 0 indica ausência de qualidade.</p>
+        <p><strong>Mínimo Denominador Comum (MDC):</strong> Decisão coletiva, modelada como a mediana das preferências individuais (p* = median(p_i, ..., p_n)), onde p_i ∈ [0, 1] representa a preferência de cada votante. É a escolha mais consensual, mas subótima.</p>
+        <p><strong>Entropia:</strong> Estagnação de Q em valores medianos (~50), com perda de potencial para decisões que maximizem Q > 60.</p>
+        <p><strong>Escala (n):</strong> Número de votantes. O ponto de ruptura ocorre onde a variância de Q diverge significativamente do modelo teórico.</p>
+        
+        <h2>Enunciado</h2>
+        <p>Nos sistemas democráticos majoritários, a pressão por coesão faz com que as decisões coletivas convirjam para o mínimo denominador comum, subotimizando Q. Para grandes valores de n, Q estabiliza em ~50, com entropia absoluta onde a variabilidade de Q é insignificante. Esta limitação estrutural torna matematicamente impossível alcançar decisões que otimizem Q.</p>
+        
+        <h2>Fórmulas Matemáticas</h2>
+        <div class="formula">
+            Fórmula da Entropia Democrática:<br>
+            \( Q_n = 100 \times \text{med}(p_1, p_2, \dots, p_n) \)<br>
+            \( \sigma(Q_n) = \frac{50}{\sqrt{\mu} \sqrt{n}} \)
+        </div>
+        
+        <h2>Modelo</h2>
+        <h3>Hipóteses</h3>
+        <p>Preferências individuais \( p_i \in [0, 1] \) seguem uma distribuição normal (média 0.5, desvio padrão 0.2).<br>
+        Decisão coletiva: \( p^* = \text{median}(p_i, \dots, p_n) \).<br>
+        Qualidade de vida: \( Q = p^* \times 100 \).<br>
+        Entropia absoluta: \( \text{SD}(Q) \leq 1 \), ou seja, \( Q \in [48, 52] \) em 95% do tempo.</p>
+        
+        <h2>Simulação Interativa</h2>
+        <div class="simulation">
+            <label>Tamanho da Amostra (\( n \)): <input type="number" id="maxSampleSize" value="100" min="10" max="1000"></label><br>
+            <label>Proporção Populacional (\( \mu \)): <input type="number" id="populationProp" value="0.5" min="0.01" max="0.99" step="0.01"></label><br>
+            <button id="simulateButton">Executar Simulação</button>
+            <p id="result"></p>
+        </div>
+        
+        <h2>Gráficos</h2>
+        <canvas id="histogramChart"></canvas>
+        <canvas id="entropyChart"></canvas>
+        
+        <h2>Explicação</h2>
+        <p>A simulação gera amostras de uma população com proporção \( \mu \), calcula o estimador \( Q_n \) para diferentes tamanhos de amostra até \( n_{\text{máx}} \), e avalia a sua variância. O histograma mostra a distribuição de \( Q_n \) para o maior \( n \), permitindo observar a sua dispersão. O segundo gráfico compara o desvio padrão simulado com o teórico, identificando o ponto onde a divergência indica a instabilidade de \( Q_n \), ou seja, o ponto de entropia democrática, onde o sistema se torna "cronicamente torpe".</p>
+        
+        <p>Implementação em JavaScript (com Chart.js, licença MIT, compatível com CC BY-SA).</p>
+    </div>
+    
+    <script src="scriptv2.js"></script>
 </body>
 </html>

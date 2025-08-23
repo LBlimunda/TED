@@ -10,21 +10,23 @@
         .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         h1 { text-align: center; color: #2c3e50; }
         h2 { color: #34495e; }
+        h3 { color: #34495e; }
         .formula { background: #ecf0f1; padding: 10px; border-left: 5px solid #3498db; margin: 10px 0; font-family: monospace; }
         .simulation { margin: 20px 0; }
-        input, button { padding: 8px; margin: 5px; }
+        input { padding: 8px; margin: 5px; }
         canvas { max-width: 100%; height: 300px; }
+        .license { text-align: center; margin-top: 20px; font-size: 0.9em; color: #666; }
+        .license-initial { text-align: center; margin-bottom: 20px; font-size: 0.9em; color: #666; }
         @media (max-width: 600px) { .container { padding: 10px; } canvas { height: 200px; } }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Teorema da Entropia Democrática</h1>
-        <p><strong>Autora:</strong> Lara Raquel Rodrigues Branco Arsénio<br>
-     <strong>Data:</strong> Agosto de 2025<br>
-     <strong>Licença:</strong> Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) – Cite Lara Raquel Rodrigues Branco Arsénio como autora. <a href="https://creativecommons.org/licenses/by-sa/4.0/">[Link]</a></p>
-    <p class="license">© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob CC BY-SA 4.0. Qualquer uso ou derivado deve citar a autora e manter esta licença.</p>
-
+        <div class="license-initial">
+            <p>© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Inclui Chart.js (<a href="https://github.com/chartjs/Chart.js/blob/master/LICENSE">MIT License</a>).</p>
+        </div>
+        
         <h2>Resumo</h2>
         <p>A democracia em larga escala é um sistema estruturalmente limitado que converge para resultados medíocres, devido à qualidade do voto coletivo, aqui quantificada pela variável Qualidade de Vida (Q), que traduz, de forma abstrata e independente de contextos regionais (Europa, Centro, Desenvolvimento), o objetivo de melhoria global da qualidade de vida. A pressão por coesão grupal conduz as decisões coletivas ao mínimo denominador comum (MDC), comprometendo Q, que estabiliza em valores medianos (~50 numa escala de 0 a 100). Quanto maior a escala (n), isto é, o número de votantes, mais restritivos são os resultados, com entropia absoluta (estabilização de Q com desvio SD(Q) ≤ 1) a partir de um ponto crítico identificado dinamicamente. Simulações em JavaScript validam esta disfuncionalidade em populações numerosas, como a União Europeia (n = 500M). A disfuncionalidade é agravada por vulnerabilidades sistémicas, como intrusão, corrupção, governos sombra e lobbies desregulados. Este teorema demonstra a impossibilidade matemática de alcançar resultados ótimos em larga escala, sugerindo a necessidade de reduzir a escala ou adotar sistemas alternativos.</p>
         
@@ -32,7 +34,7 @@
         <p><strong>Qualidade de Vida (Q):</strong> Índice em [0, 100], inspirado no Índice de Desenvolvimento Humano (IDH), abrangendo saúde, educação e rendimento. Exemplo: Q = 100 representa condições ideais; Q = 0 indica ausência de qualidade.</p>
         <p><strong>Mínimo Denominador Comum (MDC):</strong> Decisão coletiva, modelada como a mediana das preferências individuais (p* = median(p_i, ..., p_n)), onde p_i ∈ [0, 1] representa a preferência de cada votante. É a escolha mais consensual, mas subótima.</p>
         <p><strong>Entropia:</strong> Estagnação de Q em valores medianos (~50), com perda de potencial para decisões que maximizem Q > 60.</p>
-        <p><strong>Escala (n):</strong> Número de votantes. O ponto de ruptura ocorre onde a variância de Q diverge significativamente do modelo teórico.</p>
+        <p><strong>Escala (n):</strong> Número de votantes. O ponto de ruptura ocorre onde a variabilidade de Q é insignificante.</p>
         
         <h2>Enunciado</h2>
         <p>Nos sistemas democráticos majoritários, a pressão por coesão faz com que as decisões coletivas convirjam para o mínimo denominador comum, subotimizando Q. Para grandes valores de n, Q estabiliza em ~50, com entropia absoluta onde a variabilidade de Q é insignificante. Esta limitação estrutural torna matematicamente impossível alcançar decisões que otimizem Q.</p>
@@ -46,29 +48,27 @@
         
         <h2>Modelo</h2>
         <h3>Hipóteses</h3>
-        <p>Preferências individuais \( p_i \in [0, 1] \) seguem uma distribuição normal (média 0.5, desvio padrão 0.2).<br>
-        Decisão coletiva: \( p^* = \text{median}(p_i, \dots, p_n) \).<br>
-        Qualidade de vida: \( Q = p^* \times 100 \).<br>
-        Entropia absoluta: \( \text{SD}(Q) \leq 1 \), ou seja, \( Q \in [48, 52] \) em 95% do tempo.</p>
+        <p>Preferências individuais p_i ∈ [0, 1] seguem uma distribuição normal (média 0.5, desvio padrão 0.2).<br>
+        Decisão coletiva: p* = median(p_i, ..., p_n).<br>
+        Qualidade de vida: Q = p* × 100.<br>
+        Entropia absoluta: SD(Q) ≤ 1, ou seja, Q ∈ [48, 52] em 95% do tempo.</p>
         
-        <h2>Simulação Interativa</h2>
+        <h2>Simulação</h2>
         <div class="simulation">
-            <label>Tamanho da Amostra (\( n \)): <input type="number" id="maxSampleSize" value="100" min="10" max="1000"></label><br>
-            <label>Proporção Populacional (\( \mu \)): <input type="number" id="populationProp" value="0.5" min="0.01" max="0.99" step="0.01"></label><br>
-            <button id="simulateButton">Executar Simulação</button>
+            <label>Tamanho da Amostra (n): <input type="number" id="sampleSize" value="100" min="1" max="1000"></label><br>
+            <label>Proporção Populacional (μ): <input type="number" id="populationProp" value="0.5" min="0.01" max="0.99" step="0.01"></label>
             <p id="result"></p>
         </div>
         
         <h2>Gráficos</h2>
         <canvas id="histogramChart"></canvas>
-        <canvas id="entropyChart"></canvas>
+        <canvas id="normalChart"></canvas>
         
-        <h2>Explicação</h2>
-        <p>A simulação gera amostras de uma população com proporção \( \mu \), calcula o estimador \( Q_n \) para diferentes tamanhos de amostra até \( n_{\text{máx}} \), e avalia a sua variância. O histograma mostra a distribuição de \( Q_n \) para o maior \( n \), permitindo observar a sua dispersão. O segundo gráfico compara o desvio padrão simulado com o teórico, identificando o ponto onde a divergência indica a instabilidade de \( Q_n \), ou seja, o ponto de entropia democrática, onde o sistema se torna "cronicamente torpe".</p>
-        
-        <p>Implementação em JavaScript (com Chart.js, licença MIT, compatível com CC BY-SA).</p>
+        <div class="license">
+            <p>© Lara Raquel Rodrigues Branco Arsénio (CC BY-SA 4.0)</p>
+        </div>
     </div>
     
-    <script src="scriptsv2.js"></script>
+    <script src="scriptsv2.js?v=2"></script>
 </body>
 </html>

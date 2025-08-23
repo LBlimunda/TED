@@ -110,43 +110,31 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // Parâmetros
     const sampleSizes = [100, 5000, 20000, 100000]; // diferentes n
-    const simsPerN = 100;
+    const simsPerN = 100; // número de replicações
     const colors = ['blue','green','orange','red'];
 
-    const labels = Array.from({length:simsPerN}, (_,i)=>i+1);
-    const datasets = [];
+    const chartData = {
+        labels: Array.from({length:simsPerN}, (_,i)=>i+1),
+        datasets: []
+    };
 
-    sampleSizes.forEach((n, idx)=>{
-        const qValues = simulateQn(n, simsPerN);
-        const meanQ = qValues.reduce((a,b)=>a+b,0)/qValues.length;
-        const sdQ = Math.sqrt(qValues.reduce((a,b)=>a+Math.pow(b-meanQ,2),0)/qValues.length);
-
-        // Linha média
-        datasets.push({
-            label:`n=${n} (média)`,
-            data:Array(simsPerN).fill(meanQ),
+    sampleSizes.forEach((n, idx) => {
+        const qValues = simulateQn(n,simsPerN);
+        chartData.datasets.push({
+            label: `n = ${n}`,
+            data: qValues,
             borderColor: colors[idx],
             fill:false,
             tension:0.2,
-            pointRadius:0
-        });
-
-        // Banda ± desvio padrão
-        datasets.push({
-            label:`n=${n} (±SD)`,
-            data:Array(simsPerN).fill(meanQ + sdQ),
-            borderColor:'transparent',
-            backgroundColor:colors[idx]+'33', // transparência
-            fill:'+1',
-            pointRadius:0
+            pointRadius:2
         });
     });
 
-    // Linha horizontal ponto de entropia
-    datasets.push({
-        label:'Ponto de entropia (50)',
-        data:Array(simsPerN).fill(50),
-        borderColor:'black',
+    // Linha horizontal ponto de entropia (50)
+    chartData.datasets.push({
+        label: 'Ponto de entropia (50)',
+        data: Array(simsPerN).fill(50),
+        borderColor: 'black',
         borderDash:[5,5],
         fill:false,
         pointRadius:0
@@ -155,10 +143,7 @@ document.addEventListener('DOMContentLoaded', function(){
     // Inicializar gráfico
     new Chart(ctx,{
         type:'line',
-        data:{
-            labels: labels,
-            datasets: datasets
-        },
+        data: chartData,
         options:{
             responsive:true,
             plugins:{
@@ -176,5 +161,9 @@ document.addEventListener('DOMContentLoaded', function(){
 </script>
 
 
+
 </body>
 </html>
+
+        
+    

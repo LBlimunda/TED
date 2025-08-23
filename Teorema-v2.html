@@ -130,61 +130,127 @@ const chart = new Chart(ctx,{
         plugins:{
             tooltip:{
                 enabled:true,
-                callbacks:{
-                    label: function(context) {
-                        return `Frequência: ${context.raw}`;
-                    },
-                    afterLabel: function(context){
-                        return document.getElementById('chartInfo').textContent;
-                    }
-                }
-            }
-        },
+<script>
+// Criar elementos HTML dinâmicos
+if (!document.getElementById('animatedChart')) {
+    const container = document.body;
+
+    const canvas = document.createElement('canvas');
+    canvas.id = 'animatedChart';
+    container.appendChild(canvas);
+
+    const infoP = document.createElement('p');
+    infoP.id = 'chartInfo';
+    infoP.style.fontWeight = 'bold';
+    container.appendChild(infoP);
+
+    const legendP = document.createElement('p');
+    legendP.id = 'chartLegend';
+    legendP.style.marginTop = '10px';
+    legendP.style.maxWidth = '800px';
+    container.appendChild(legendP);
+}
+
+// Funções matemáticas
+function randomNormal(mean, stdDev) {
+    const u1 = Math.random();
+    const u2 = Math.random();
+    const z = Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+    return mean + stdDev*z;
+}
+
+function median(values) {
+    values.sort((a,b)=>a-b);
+    const half = Math.floor(values.length/2);
+    return values.length%2 ? values[half] : (values[half-1]+values[half])/2;
+}
+
+function simulateQn(n) {
+    const props = [];
+    for(let j=0;j<n;j++){
+        let pi = randomNormal(0.5,0.2);
+        pi = Math.min(Math.max(pi,0),1);
+        props.push(pi);
+    }
+    return 100*median(props);
+}
+
+// Configuração do Chart.js
+const ctx = document.getElementById('animatedChart').getContext('2d');
+const chartData = { labels: [], datasets:[
+    {
+        label:'Q_n',
+        data: [],
+        borderColor:'rgba(54,162,235,1)',
+        backgroundColor:'rgba(54,162,235,0.2)',
+        fill:false,
+        tension:0.2,
+        pointRadius:4
+    },
+    {
+        label:'Média de Q_n',
+        data: [],
+        borderColor:'red',
+        borderWidth:2,
+        borderDash:[5,5],
+        fill:false,
+        pointRadius:0
+    }
+]};
+
+const chart = new Chart(ctx,{
+    type:'line',
+    data: chartData,
+    options:{
+        responsive:true,
+        animation:{ duration:500 },
+        plugins:{ tooltip:{ enabled:true }},
         scales:{
-            x:{ title:{display:true,text:'Q_n'} },
-            y:{ beginAtZero:true, title:{display:true,text:'Frequência'} }
+            x:{ title:{display:true,text:'Tamanho da amostra n'} },
+            y:{ title:{display:true,text:'Q_n'}, min:0, max:100 }
         }
     }
 });
 
+// Variáveis de simulação
 let currentN = 1;
 const maxN = 1000;
-let cumulativeData = Array(20).fill(0); // acumula histograma
+const step = 10; // incrementos de n
 
+// Simulação e atualização
 function updateChart(){
-    const qnValues = simulateQn(currentN, 300);
-    const histData = createHistogramData(qnValues);
+    const qn = simulateQn(currentN);
+    chart.data.labels.push(currentN);
+    chart.data.datasets[0].data.push(qn);
 
-    // Atualizar histograma cumulativo suavemente
-    for(let i=0;i<20;i++){
-        cumulativeData[i] = cumulativeData[i]*0.7 + histData[i]*0.3; // suavização exponencial
-    }
-    chart.data.datasets[0].data = cumulativeData;
-
-    // Atualizar cores para destacar bin central (≈50)
-    const colors = cumulativeData.map((_,i) => (i===10 ? 'rgba(255,0,0,0.6)' : 'rgba(54,162,235,0.5)'));
-    chart.data.datasets[0].backgroundColor = colors;
+    // Calcular média acumulada
+    const meanQ = chart.data.datasets[0].data.reduce((a,b)=>a+b,0)/chart.data.datasets[0].data.length;
+    chart.data.datasets[1].data.push(meanQ);
 
     chart.update();
 
-    // Estatísticas atuais
-    const meanQ = qnValues.reduce((a,b)=>a+b,0)/qnValues.length;
-    const varianceQ = qnValues.reduce((a,b)=>a+Math.pow(b-meanQ,2),0)/qnValues.length;
-    const sdQ = Math.sqrt(varianceQ);
-
-    // Atualizar info
+    // Atualizar texto dinâmico
     document.getElementById('chartInfo').textContent = 
-        `Tamanho da amostra n = ${currentN}, Média Q_n ≈ ${meanQ.toFixed(1)}, SD ≈ ${sdQ.toFixed(1)}`;
+        `Tamanho da amostra n = ${currentN}, Q_n atual ≈ ${qn.toFixed(1)}, Média acumulada ≈ ${meanQ.toFixed(1)}`;
 
-    // Aumentar n gradualmente
-    currentN += Math.floor(currentN*0.05)+1;
-    if(currentN <= maxN){
-        setTimeout(updateChart, 700);
+    // Legenda explicativa
+    document.getElementById('chartLegend').innerHTML = `
+        <strong>Legenda:</strong> Este gráfico mostra a evolução de Q_n = 100 × mediana(p_i) 
+        à medida que o tamanho da amostra n aumenta. Inicialmente, Q_n varia bastante devido à dispersão das preferências individuais.
+        À medida que n cresce, Q_n converge para aproximadamente 50, ilustrando o ponto de entropia do sistema democrático.
+        A linha vermelha tracejada indica a média acumulada de Q_n, evidenciando a estabilização do valor central conforme n aumenta.
+    `;
+
+    // Incrementar n e continuar
+    if(currentN < maxN){
+        currentN += step;
+        setTimeout(updateChart,700);
     }
 }
 
 updateChart();
-    </script>
+</script>
+
 </body>
 </html>
 

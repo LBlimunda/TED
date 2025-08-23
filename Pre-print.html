@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-print: Teorema da Entropia Democrática</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+.container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+h1,h2,h3 { color: #34495e; }
+.formula { background: #ecf0f1; padding: 10px; border-left: 5px solid #3498db; margin: 10px 0; font-family: monospace; }
+table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+th { background-color: #eee; }
+#nCritOutput { font-weight: bold; margin: 10px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Teorema da Entropia Democrática</h1>
+<div class="license-initial">
+<p>© Lara Raquel Rodrigues Branco Arsénio, 2025. Licenciado sob <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>
+</div>
+
+<h2>Resumo</h2>
+<p>A democracia em larga escala é um sistema estruturalmente limitado que converge para resultados medianos devido à qualidade do voto coletivo, aqui quantificada pela variável Qualidade de Vida (Q). A pressão por coesão grupal conduz as decisões coletivas ao mínimo denominador comum, comprometendo Q, que estabiliza em valores medianos (~50). Quanto maior a escala (n), mais restritivos são os resultados, com entropia absoluta (SD(Q) ≤ 1) a partir de um ponto crítico identificado dinamicamente.</p>
+
+<h2>Fórmulas Matemáticas</h2>
+<div class="formula">
+<p>
+Q<sub>n</sub> = 100 &middot; med(p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>n</sub>)<br>
+σ(Q<sub>n</sub>) = 50 / (f(&mu;) &radic;n)
+</p>
+</div>
+
+<h2>Definições</h2>
+<p><strong>Qualidade de Vida (Q):</strong> Índice [0,100] inspirado no IDH.</p>
+<p><strong>Mínimo Denominador Comum (MDC):</strong> p* = med(p<sub>i</sub>,...,p<sub>n</sub>).</p>
+<p><strong>Entropia:</strong> Estagnação de Q em ~50.</p>
+<p><strong>Escala (n):</strong> Número de votantes. Ponto de ruptura definido quando SD(Q) ≤ 1.</p>
+
+<h2>Enunciado</h2>
+<p>Nos sistemas democráticos majoritários, a pressão por coesão faz com que decisões coletivas convirjam para o mínimo denominador comum, subotimizando Q. Para grandes n, Q estabiliza em ~50, com entropia absoluta. O ponto crítico é onde a variabilidade de Q se torna insignificante.</p>
+
+<h2>Modelo e Hipóteses</h2>
+<p>Preferências p_i ∈ [0,1] seguem distribuição normal (média 0.5, desvio 0.2). Q = 100 &middot; med(p_i,...,p_n). Entropia absoluta: SD(Q) ≤ 1.</p>
+
+<h2>Simulação Interativa</h2>
+<canvas id="entropyChart" width="800" height="400"></canvas>
+<p id="nCritOutput"></p>
+
+<h3>Tabela de Resultados</h3>
+<table>
+<tr><th>n</th><th>Média Qₙ</th><th>SD(Qₙ)</th></tr>
+<tr><td>100</td><td id="mean100"></td><td id="sd100"></td></tr>
+<tr><td>5000</td><td id="mean5000"></td><td id="sd5000"></td></tr>
+<tr><td>20000</td><td id="mean20000"></td><td id="sd20000"></td></tr>
+<tr><td>100000</td><td id="mean100000"></td><td id="sd100000"></td></tr>
+</table>
+
+<h2>Legenda</h2>
+<p>Linhas coloridas representam diferentes valores de n. Linha preta tracejada indica Q = 50. Quanto maior n, menor a variabilidade, mostrando o ponto crítico de entropia N<sub>crit</sub>.</p>
+
+<script>
+// Funções matemáticas
+function randomNormal(mean,std){ const u1=Math.random(); const u2=Math.random(); const z=Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2); return mean+std*z; }
+function median(arr){ arr.sort((a,b)=>a-b); const h=Math.floor(arr.length/2); return arr.length%2 ? arr[h] : (arr[h-1]+arr[h])/2; }
+function simulateQn(n,sims){ const res=[]; for(let i=0;i<sims;i++){ const props=[]; for(let j=0;j<n;j++){ let p=randomNormal(0.5,0.2); props.push(Math.min(Math.max(p,0),1)); } res.push(100*median(props)); } return res; }
+
+// Parâmetros
+const sampleSizes=[100,5000,20000,100000];
+const simsPerN=100;
+const colors=['blue','green','orange','red'];
+const ctx=document.getElementById('entropyChart').getContext('2d');
+
+const chartData={ labels:Array.from({length:simsPerN},(_,i)=>i+1), datasets:[] };
+let nCrit=null;
+
+// Preencher tabela e calcular N_crit
+sampleSizes.forEach((n,i)=>{
+    const qVals=simulateQn(n,simsPerN);
+    const mean = qVals.reduce((a,b)=>a+b,0)/qVals.length;
+    const sd = Math.sqrt(qVals.reduce((a,b)=>a+Math.pow(b-mean,2),0)/qVals.length);
+    document.getElementById(`mean${n}`).innerText=mean.toFixed(2);
+    document.getElementById(`sd${n}`).innerText=sd.toFixed(2);
+    if(nCrit===null && sd<=1) nCrit=n; // Primeiro n com SD ≤ 1
+
+    chartData.datasets.push({
+        label:`n = ${n}`,
+        data:qVals,
+        borderColor:colors[i],
+        fill:false,
+        tension:0.2,
+        pointRadius:2
+    });
+});
+
+// Linha ponto de entropia
+chartData.datasets.push({
+    label:'Ponto de entropia (50)',
+    data:Array(simsPerN).fill(50),
+    borderColor:'black',
+    borderDash:[5,5],
+    fill:false,
+    pointRadius:0
+});
+
+// Inicializar gráfico
+new Chart(ctx,{
+    type:'line',
+    data:chartData,
+    options:{
+        responsive:true,
+        plugins:{ tooltip:{enabled:true,mode:'index',intersect:false}, legend:{display:true,position:'top'} },
+        scales:{ x:{title:{display:true,text:'Replicação'}}, y:{title:{display:true,text:'Q_n'},min:0,max:100} }
+    }
+});
+
+// Mostrar N_crit
+document.getElementById('nCritOutput').innerText=`Ponto crítico de entropia (N_crit): ${nCrit} votantes`;
+</script>
+
+</body>
+</html>

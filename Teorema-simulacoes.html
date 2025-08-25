@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>TED - Simulações</title>
+    <meta name="author" content="Lara Raquel Rodrigues Branco Arsénio">
+    <meta name="project-id" content="678999999">
+    <style>
+        #result {
+            white-space: pre-line;
+            font-family: monospace;
+            background: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teorema da Entropia Democrática - Simulações</h1>
+    <p>Esta página permite simular o comportamento da mediana das preferências em democracias de larga escala.</p>
+    <div id="result"></div>
+
+    <script>
+        /*
+         * Teorema da Entropia Democrática - Simulações
+         * Autor: Lara Raquel Rodrigues Branco Arsénio
+         * ID do projeto: 678999999
+         * Licença: MIT License
+         */
+
+        function gerarPreferencias(n) {
+            let prefs = [];
+            for (let i = 0; i < n; i++) {
+                prefs.push(Math.random());
+            }
+            return prefs;
+        }
+
+        function mediana(arr) {
+            let sorted = arr.slice().sort((a, b) => a - b);
+            let mid = Math.floor(sorted.length / 2);
+            if (sorted.length % 2 === 0) {
+                return (sorted[mid - 1] + sorted[mid]) / 2;
+            } else {
+                return sorted[mid];
+            }
+        }
+
+        function simularTED(n) {
+            let prefs = gerarPreferencias(n);
+            let Q = mediana(prefs) * 100;
+            return `Número de participantes: ${n}<br>Preferências: ${prefs.map(x => x.toFixed(2))}<br>Mediana (Q): ${Q.toFixed(2)}<br>----------------------------<br>`;
+        }
+
+        let simulacoes = [5, 50, 500, 5000, 100000];
+        let resultDiv = document.getElementById('result');
+
+        simulacoes.forEach((n, i) => {
+            setTimeout(() => {
+                resultDiv.innerHTML += simularTED(n);
+            }, i * 500);
+        });
+    </script>
+</body>
+</html>

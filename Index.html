@@ -243,6 +243,72 @@ Em populações acima do ponto crítico N<sub>crit</sub>, a variabilidade de Q<s
 Consequentemente, candidatos ou propostas extraordinárias não conseguem influenciar significativamente o resultado, consolidando o mínimo denominador comum como fator determinante da escolha coletiva.</p>
 Este problema Matemático levanta um problema humano real. Como integrar com igual peso um grande número de votos sem cair num ciclo entropia. 
 <br/>
+<section id="prova-formal-ted">
+    <h2>Prova Formal do Teorema da Entropia Democrática (TED)</h2>
+
+    <p>
+        O Teorema da Entropia Democrática propõe que, em sistemas democráticos de larga escala, 
+        a mediana das preferências individuais converge para um ponto central, representando o mínimo denominador comum das preferências.
+    </p>
+
+    <h3>1. Definições</h3>
+    <p>
+        Seja <em>n</em> participantes com preferências individuais p<sub>i</sub> &in; [0,1]. 
+        Denotemos Q<sub>n</sub> = mediana(p<sub>1</sub>,...,p<sub>n</sub>) como a qualidade coletiva.
+    </p>
+
+    <div class="ted-ia-formula">
+        <strong>Mediana:</strong><br>
+        Q<sub>n</sub> = med(p<sub>1</sub>, ..., p<sub>n</sub>)<br>
+        <em>Representa o mínimo denominador comum das preferências.</em>
+    </div>
+
+    <div class="ted-ia-formula">
+        <strong>Desvio Padrão:</strong><br>
+        &sigma;(Q<sub>n</sub>) = 50 / (f(&mu;) &radic;n)<br>
+        <em>Quantifica a dispersão das preferências coletivas.</em>
+    </div>
+
+    <h3>2. Hipóteses</h3>
+    <ul>
+        <li>As preferências p<sub>i</sub> são independentes e identicamente distribuídas (i.i.d.).</li>
+        <li>A mediana Q<sub>n</sub> é bem definida para cada n.</li>
+    </ul>
+
+    <h3>3. Enunciado Formal</h3>
+    <p>
+        À medida que n &rarr; ∞, Q<sub>n</sub> converge em probabilidade para a mediana da distribuição F:
+    </p>
+    <div class="ted-ia-formula">
+        Q<sub>n</sub> &rarr; m<sub>F</sub> = F<sup>-1</sup>(0.5)
+    </div>
+
+    <h3>4. Justificação Teórica e Ponto Crítico</h3>
+    <p>
+        O desvio padrão &sigma;(Q<sub>n</sub>) diminui com n. Definimos o ponto crítico n<sub>crit</sub> onde a variabilidade se torna insignificante (&sigma;(Q<sub>n</sub>) ≤ 1):
+    </p>
+    <div class="ted-ia-formula">
+        n<sub>crit</sub> &ge; (50 / f(&mu;))&sup2;
+    </div>
+    <p>
+        Acima de n<sub>crit</sub>, observa-se <strong>entropia absoluta</strong>: Q<sub>n</sub> estabiliza perto de 50, como ilustram as simulações interativas.
+    </p>
+
+    <h3>5. Referência aos Gráficos do Projeto</h3>
+    <p>
+        As evidências empíricas podem ser consultadas nos gráficos interativos:
+    </p>
+    <ul>
+        <li><a href="#entropyComparisonChart">Gráfico de Comparação de Q<sub>n</sub> para diferentes n</a> — visualiza a convergência para o ponto de entropia.</li>
+        <li><a href="#variabilidadeChart">Gráfico da Variabilidade &sigma;(Q<sub>n</sub>)</a> — mostra o ponto crítico n<sub>crit</sub> e a redução do desvio padrão.</li>
+    </ul>
+
+    <h3>6. Interpretação</h3>
+    <p>
+        À medida que n cresce, o sistema demonstra que decisões coletivas convergem para a mediana das preferências individuais. 
+        Isto confirma a hipótese do mínimo denominador comum e a inevitabilidade de resultados medianos em larga escala, ilustrando matematicamente a entropia democrática.
+    </p>
+</section>
 
     <section id="simulacoes-com-formulas">
     <h2>Simulações, Fórmulas e Interpretação</h2>

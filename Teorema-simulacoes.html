@@ -55,7 +55,7 @@
             return `Número de participantes: ${n}<br>Preferências: ${prefs.map(x => x.toFixed(2))}<br>Mediana (Q): ${Q.toFixed(2)}<br>----------------------------<br>`;
         }
 
-        let simulacoes = [5, 50, 500, 5000, 10000, 50000,100000,10000000];
+        let simulacoes = [5, 50, 500, 1500, 3500, 5000, 10000, 50000,100000,10000000];
         let resultDiv = document.getElementById('result');
 
         simulacoes.forEach((n, i) => {

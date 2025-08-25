@@ -91,6 +91,45 @@
     <ul>
         <li>N<sub>crit</sub> ≈ (50 / 0.8)² = 3906</li>
     </ul>
+   <!-- ===== TED — f(mu) e n_crit (versão resumida) ===== -->
+<section id="ted-fmu-ncrit" class="fmu-section">
+  <style>
+    .fmu-section { margin-top: 1.5rem; }
+    .fmu-title { color:#34495e; margin-bottom: .5rem; }
+    .fmu-par { margin:.5rem 0; text-align: justify; }
+    .fmu-formula { background:#f5f7fa; border-left:4px solid #3498db; padding:10px; font-family:monospace; }
+    .fmu-list { margin:.5rem 0 .25rem 1rem; }
+    .fmu-list li { margin:.25rem 0; }
+  </style>
+
+  <h2 class="fmu-title">Função f(&mu;) e Ponto Crítico n<sub>crit</sub> (Resumo)</h2>
+
+  <div class="fmu-formula">
+    <p style="margin:0">
+      <strong>Definição.</strong>
+      Seja &mu; a distribuição das preferências individuais p<sub>i</sub> &in; [0,1].
+      Define-se f(&mu;) como a função que devolve o menor n tal que a variabilidade de Q<sub>n</sub> é entropizada:
+      <br>
+      n<sub>crit</sub> = f(&mu;),&nbsp; onde &nbsp; &sigma;(Q<sub>n</sub>) &le; 1 &nbsp; para todo n &ge; n<sub>crit</sub>.
+      <br>
+      Com &nbsp; Q<sub>n</sub> = 100 &middot; med(p<sub>1</sub>,...,p<sub>n</sub>) &nbsp; e, no caso teórico base, &nbsp; 
+      &sigma;(Q<sub>n</sub>) = 50 / ( f(&mu;) &radic;n ).
+    </p>
+  </div>
+
+  <p class="fmu-par"><strong>Intuição.</strong> Quanto mais a distribuição &mu; for simétrica e concentrada em torno de 0,5, mais cedo ocorre entropia (n<sub>crit</sub> pequeno). Quanto mais dispersa, multi-modal ou enviesada, maior o n<sub>crit</sub>.</p>
+
+  <p class="fmu-par"><strong>Exemplos resumidos.</strong></p>
+  <ul class="fmu-list">
+    <li><em>Uniforme [0,1]</em>: mediana converge rapidamente para 0,5 &rarr; n<sub>crit</sub> pequeno (dezenas).</li>
+    <li><em>Bimodal (picos em 0 e 1)</em>: população polarizada &rarr; n<sub>crit</sub> grande (centenas/milhares).</li>
+    <li><em>Normal centrada em 0,5 (desvio pequeno)</em>: forte concentração no centro &rarr; n<sub>crit</sub> muito pequeno (&lt; dezenas).</li>
+    <li><em>Enviesada (e.g., &mu; &asymp; 0,7)</em>: tendência clara &rarr; entropia ocorre, mas com n<sub>crit</sub> maior (centenas).</li>
+  </ul>
+
+  <p class="fmu-par"><strong>Nota.</strong> A forma fechada de f(&mu;) depende de &mu;. Na prática, estima-se n<sub>crit</sub> por simulação ou por limites assintóticos da variância da mediana sob a distribuição assumida.</p>
+</section>
+<!-- ==== /TED — f(mu) e n_crit (resumo) ==== -->
 
     <p><strong>Comparação de σ(Q<sub>n</sub>) para diferentes n:</strong></p>
     <table border="1" cellpadding="4" cellspacing="0">
@@ -129,11 +168,12 @@
             </tr>
         </tbody>
     </table>
-</div>
+</div><br/>
 <p><strong>Resumo do efeito de entropia:</strong> 
 Em populações acima do ponto crítico N<sub>crit</sub>, a variabilidade de Q<sub>n</sub> torna-se tão reduzida que qualquer decisão coletiva converge inevitavelmente para a mediana das preferências individuais. 
 Consequentemente, candidatos ou propostas extraordinárias não conseguem influenciar significativamente o resultado, consolidando o mínimo denominador comum como fator determinante da escolha coletiva.</p>
-<!-- ===================== TED — Aplicações em IA e Machine Learning ===================== -->
+Este problema Matemático levanta um problema humano real. Como integrar com igual peso um grande número de votos sem cair num ciclo entropia. 
+<br/><!-- ===================== TED — Aplicações em IA e Machine Learning ===================== -->
 <section id="aplicacoes-ia-ml" class="ted-ia-section">
 
   <h2 class="ted-ia-title">Aplicações em Inteligência Artificial e Machine Learning</h2>

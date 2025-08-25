@@ -76,7 +76,8 @@ O teorema propõe que, em democracias de larga escala, a agregação de preferê
 
 ## Estrutura do Projeto
 
-- `teorema.html` – Página principal com descrição teórica, fórmulas, tabela e gráficos.  
+- `teorema.html` – Página principal com descrição teórica, fórmulas, tabela e gráficos.
+- `Teorema-simulacoes.html` - Simulações e cálculos - consola
 
 ---
 

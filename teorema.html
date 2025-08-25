@@ -29,7 +29,14 @@
     .ted-ia-table th, .ted-ia-table td { border: 1px solid #ccc; padding: 8px; vertical-align: top; }
     .ted-ia-table th { background: #eef2f6; text-align: left; }
     .ted-ia-note { font-size: 0.9em; margin-top: 1rem; }
-     @media (max-width: 600px) { .container { padding: 10px; } canvas { height: 200px; } }
+    .fmu-section { margin-top: 1.5rem; }
+    .fmu-title { color:#34495e; margin-bottom: .5rem; }
+    .fmu-par { margin:.5rem 0; text-align: justify; }
+    .fmu-formula { background:#f5f7fa; border-left:4px solid #3498db; padding:10px; font-family:monospace; }
+    .fmu-list { margin:.5rem 0 .25rem 1rem; }
+    .fmu-list li { margin:.25rem 0; }
+ 
+    @media (max-width: 600px) { .container { padding: 10px; } canvas { height: 200px; } }
     </style>
 </head>
 <body>
@@ -68,8 +75,8 @@
         Entropia absoluta: SD(Q) ≤ 1, ou seja, Q ∈ [48, 52] em 95% do tempo.</p>
 
         <!-- ===== Justificação Teórica da Variância e Ponto Crítico ===== -->
-<section id="justificacao-variancia">
-  <h3>Justificação Teórica da Variância e Ponto Crítico</h3>
+
+  <h3>Variância e Ponto Crítico</h3>
   <p>
     No contexto do Teorema da Entropia Democrática (TED), a qualidade de vida coletiva Q<sub>n</sub> é modelada como a mediana das preferências individuais p<sub>i</sub>, escalada por 100:
   </p>
@@ -103,7 +110,6 @@
   <p>
     Este valor sugere que, em populações com mais de 3900 participantes, a variabilidade de Q<sub>n</sub> se torna tão reduzida que qualquer decisão coletiva converge inevitavelmente para a mediana, caracterizando a entropia absoluta.
   </p>
-</section>
 <!-- ==== /Justificação Teórica da Variância e Ponto Crítico ==== -->
 
         <h2>Simulação</h2>
@@ -131,15 +137,7 @@
         <li>N<sub>crit</sub> ≈ (50 / 0.8)² = 3906</li>
     </ul>
    <!-- ===== TED — f(mu) e n_crit (versão resumida) ===== -->
-<section id="ted-fmu-ncrit" class="fmu-section">
-  <style>
-    .fmu-section { margin-top: 1.5rem; }
-    .fmu-title { color:#34495e; margin-bottom: .5rem; }
-    .fmu-par { margin:.5rem 0; text-align: justify; }
-    .fmu-formula { background:#f5f7fa; border-left:4px solid #3498db; padding:10px; font-family:monospace; }
-    .fmu-list { margin:.5rem 0 .25rem 1rem; }
-    .fmu-list li { margin:.25rem 0; }
-  </style>
+<section>
 
   <h2 class="fmu-title">Função f(&mu;) e Ponto Crítico n<sub>crit</sub> (Resumo)</h2>
 

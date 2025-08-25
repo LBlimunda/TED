@@ -7,18 +7,76 @@
 
 ## Descrição
 
-O Teorema da Entropia Democrática formaliza matematicamente a tendência de sistemas democráticos majoritários em larga escala convergirem para resultados medianos, independentemente das preferências individuais. 
+## Teorema da Entropia Democrática (TED)
 
-A qualidade de vida coletiva (`Q`) é definida como a mediana das preferências individuais multiplicada por 100. Entropia absoluta ocorre quando SD(Q) ≤ 1, identificando um ponto crítico populacional chamado **N<sub>crit</sub>**.
+### 1. Título e Autor
+
+**Teorema da Entropia Democrática**
+Autor(a): Lara Raquel Rodrigues Branco Arsénio
+Versão: 678999999
+Data de criação: 25/08/2025
+
+---
+
+### 2. Resumo
+
+O teorema propõe que, em democracias de larga escala, a agregação de preferências individuais tende a um valor mediano, criando um efeito de entropia ou achatamento das decisões. Esse comportamento limita a obtenção de decisões excecionais, com implicações também para sistemas de IA que agregam inputs massivos.
+
+---
+
+### 3. Introdução
+
+* **Motivação:** Explorar como o tamanho e a diversidade de participantes impactam a qualidade de decisões coletivas.
+* **Contexto:** Democracia, agregação de preferências, sistemas complexos.
+* **Objetivo:** Formalizar o efeito de "mínimo denominador comum" e propor conceitos para análise futura.
+
+---
+
+### 4. Definições
+
+* **Variáveis:**
+
+  * $p_i \in [0,1]$ - preferências individuais.
+  * $n$ - número de participantes.
+  * $Q = 100 \cdot \text{mediana}(p_i)$ - qualidade coletiva.
+* **Conceitos:**
+
+  * MDC - mínimo denominador comum.
+  * Entropia democrática - achatamento ou perda de nuance em decisões coletivas.
+
+---
+
+### 5. Enunciado do Teorema
+
+À medida que $n \to \infty$, a qualidade coletiva $Q_n$ converge para a mediana global das preferências individuais, e a variância de $Q_n$ diminui, tornando praticamente impossível alcançar decisões excecionais sem reorganização estrutural do processo de decisão.
+
+---
+
+### 6. Exemplos / Ilustrações
+
+* Simulações JavaScript ou gráficos mostrando convergência da mediana com $n$ crescente.
+* Aplicação hipotética à União Europeia ou grandes votações online.
+
+---
+
+### 7. Observações e Limitações
+
+* Assumptos sobre distribuição de $p_i$ (uniforme, normal, enviesada).
+* Mediana como agregador simplifica sistemas complexos.
+* Possível influência de lobby, ruído ou manipulação não modelada.
+
+---
+
+### 8. Sugestões para Futuras Revisões
+
+* Exploração estatística detalhada (desvio padrão, distribuição).
+* Comparação com outros agregadores (média ponderada, vot
 
 ---
 
 ## Estrutura do Projeto
 
-- `index.html` – Página principal com descrição teórica, fórmulas, tabela e gráficos.  
-- `scriptsv2.js` – Código JS para simulações e gráficos (opcional, pode estar embutido no HTML).  
-- `style.css` – Estilo do documento (opcional, pode estar embutido no HTML).  
-- `assets/` – Recursos adicionais (imagens, dados, etc).
+- `teorema.html` – Página principal com descrição teórica, fórmulas, tabela e gráficos.  
 
 ---
 
@@ -45,7 +103,7 @@ Funciona em qualquer navegador moderno sem dependências externas adicionais.
 
 ## Uso
 
-1. Abrir `index.html` em um navegador moderno.  
+1. Abrir `teorema.html` em um navegador moderno.  
 2. Visualizar gráficos e tabela de estatísticas de Q.  
 3. Consultar o ponto crítico de entropia N<sub>crit</sub>.  
 4. Exportar para PDF se desejar compartilhar como pre-print.
@@ -55,7 +113,8 @@ Funciona em qualquer navegador moderno sem dependências externas adicionais.
 ## Referências
 
 - Conceitos de entropia e mediocridade coletiva aplicados à democracia.  
-- Teorema do Limite Central para comparação estatística.  
+- Teorema do Limite Central para comparação estatística.
+- AI / Machine Learning 
 - Chart.js (MIT License) para gráficos interativos.
 
 ---

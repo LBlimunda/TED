@@ -242,8 +242,106 @@
 Em populações acima do ponto crítico N<sub>crit</sub>, a variabilidade de Q<sub>n</sub> torna-se tão reduzida que qualquer decisão coletiva converge inevitavelmente para a mediana das preferências individuais. 
 Consequentemente, candidatos ou propostas extraordinárias não conseguem influenciar significativamente o resultado, consolidando o mínimo denominador comum como fator determinante da escolha coletiva.</p>
 Este problema Matemático levanta um problema humano real. Como integrar com igual peso um grande número de votos sem cair num ciclo entropia. 
-<br/><!-- ===================== TED — Aplicações em IA e Machine Learning ===================== -->
-<section id="aplicacoes-ia-ml" class="ted-ia-section">
+<br/>
+
+    <section id="simulacoes-com-formulas">
+    <h2>Simulações, Fórmulas e Interpretação</h2>
+    
+    <p>
+        As simulações do Teorema da Entropia Democrática mostram que, à medida que o número de participantes aumenta, 
+        a mediana das preferências individuais tende a estabilizar. Isto confirma que grandes grupos convergem para 
+        um ponto de equilíbrio subótimo — o mínimo denominador comum das preferências.
+    </p>
+
+    <div id="result" style="white-space: pre-line; font-family: monospace; background:#f0f0f0; padding:10px; border:1px solid #ccc; max-height:400px; overflow-y:auto;">
+        <!-- Resultados serão preenchidos aqui pelo JS -->
+    </div>
+
+    <h3>Fórmulas de Cálculo</h3>
+    <div style="background:#fafafa; padding:10px; border:1px solid #ddd; margin-bottom:10px;">
+        <strong>Mediana:</strong> <br>
+        Q = 100 × mediana(p<sub>i</sub>)<br>
+        <em>Onde p<sub>i</sub> são as preferências individuais geradas aleatoriamente.</em>
+    </div>
+
+    <div style="background:#fafafa; padding:10px; border:1px solid #ddd; margin-bottom:10px;">
+        <strong>Desvio Padrão:</strong> <br>
+        σ = sqrt( (∑ (p<sub>i</sub> - μ)²) / n ) <br>
+        μ = média(p<sub>i</sub>) <br>
+        <em>Permite medir a dispersão das preferências individuais em torno da mediana.</em>
+    </div>
+
+    <h3>Tabela Estatística das Simulações</h3>
+    <table style="border-collapse: collapse; width:100%;">
+        <thead>
+            <tr>
+                <th>Participantes (n)</th>
+                <th>Mediana (Q)</th>
+                <th>Desvio Padrão das Preferências</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- Linhas preenchidas pelo JS -->
+        </tbody>
+    </table>
+
+    <p>
+        O cálculo subjacente consiste em gerar aleatoriamente preferências individuais e calcular a mediana Q, 
+        que representa a qualidade coletiva. Observa-se que a agregação de preferências produz um efeito de “achatamento” 
+        dos extremos, típico de sistemas com entropia elevada.
+    </p>
+
+    <script>
+        function gerarPreferencias(n) {
+            let prefs = [];
+            for (let i = 0; i < n; i++) {
+                prefs.push(Math.random());
+            }
+            return prefs;
+        }
+
+        function mediana(arr) {
+            let sorted = arr.slice().sort((a,b)=>a-b);
+            let mid = Math.floor(sorted.length/2);
+            return (arr.length % 2 === 0) ? (sorted[mid-1]+sorted[mid])/2 : sorted[mid];
+        }
+
+        function desvioPadrao(arr) {
+            let media = arr.reduce((a,b)=>a+b,0)/arr.length;
+            let variancia = arr.reduce((a,b)=>a+Math.pow(b-media,2),0)/arr.length;
+            return Math.sqrt(variancia);
+        }
+
+        function simularTED(n) {
+            let prefs = gerarPreferencias(n);
+            let Q = mediana(prefs)*100;
+            let dp = desvioPadrao(prefs);
+            let texto = `Número de participantes: ${n}<br>Mediana (Q): ${Q.toFixed(2)}<br>Desvio padrão: ${dp.toFixed(2)}<br>----------------------------<br>`;
+            return {texto, Q, dp};
+        }
+
+        let simulacoes = [5,50,500,5000,100000];
+        let resultDiv = document.getElementById('result');
+        let tbody = document.getElementById('table-body');
+
+        simulacoes.forEach((n,i)=>{
+            setTimeout(()=>{
+                let res = simularTED(n);
+                resultDiv.innerHTML += res.texto;
+
+                let tr = document.createElement('tr');
+                tr.innerHTML = `<td>${n}</td><td>${res.Q.toFixed(2)}</td><td>${res.dp.toFixed(2)}</td>`;
+                tbody.appendChild(tr);
+            }, i*500);
+        });
+    </script>
+</section>
+
+    
+    <!-- ===================== TED — Aplicações em IA e Machine Learning ===================== -->
+
+    
+    <section id="aplicacoes-ia-ml" class="ted-ia-section">
 
   <h2 class="ted-ia-title">Aplicações em Inteligência Artificial e Machine Learning</h2>
 

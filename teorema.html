@@ -18,6 +18,17 @@
         canvas { max-width: 100%; height: 300px; }
         .license { text-align: center; margin-top: 20px; font-size: 0.9em; color: #666; }
         .license-initial { text-align: center; margin-bottom: 20px; font-size: 0.9em; color: #666; }
+        .ted-ia-section { margin-top: 2rem; }
+    .ted-ia-title { color: #34495e; margin-bottom: 0.5rem; }
+    .ted-ia-subtitle { color: #34495e; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+    .ted-ia-paragraph { margin: 0.5rem 0; text-align: justify; }
+    .ted-ia-formula { background: #f5f7fa; border-left: 5px solid #3498db; padding: 10px; font-family: monospace; }
+    .ted-ia-highlight { background: #fff7e6; border-left: 5px solid #f39c12; padding: 10px; }
+    .ted-ia-table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; }
+    .ted-ia-table th, .ted-ia-table td { border: 1px solid #ccc; padding: 8px; vertical-align: top; }
+    .ted-ia-table th { background: #eef2f6; text-align: left; }
+    .ted-ia-note { font-size: 0.9em; color: #555; margin-top: 0.5rem; }
+
         @media (max-width: 600px) { .container { padding: 10px; } canvas { height: 200px; } }
     </style>
 </head>
@@ -124,6 +135,99 @@
 <p><strong>Resumo do efeito de entropia:</strong> 
 Em populações acima do ponto crítico N<sub>crit</sub>, a variabilidade de Q<sub>n</sub> torna-se tão reduzida que qualquer decisão coletiva converge inevitavelmente para a mediana das preferências individuais. 
 Consequentemente, candidatos ou propostas extraordinárias não conseguem influenciar significativamente o resultado, consolidando o mínimo denominador comum como fator determinante da escolha coletiva.</p>
+<!-- ===================== TED — Aplicações em IA e Machine Learning ===================== -->
+<section id="aplicacoes-ia-ml" class="ted-ia-section">
+
+  <h2 class="ted-ia-title">Aplicações em Inteligência Artificial e Machine Learning</h2>
+
+  <p class="ted-ia-paragraph">
+    A formulação do Teorema da Entropia Democrática (TED), originalmente concebida para explicar limitações estruturais na decisão coletiva em sistemas democráticos de larga escala, pode ser extrapolada para sistemas de aprendizagem automática (*machine learning*) e ciência de dados em grande escala.
+  </p>
+
+  <p class="ted-ia-paragraph">
+    Nestes contextos, as entradas (inputs) de um modelo podem ser entendidas como análogas às preferências individuais (p<sub>i</sub>) no TED. Quando os dados são essencialmente <strong>qualitativos ou subjetivos</strong> (por exemplo, avaliações humanas, classificações, votos binários, preferências de utilizadores), o aumento da escala tende a produzir um efeito de <strong>medianização</strong>, isto é, convergência para padrões médios e consensuais em detrimento de extremos informativos.
+  </p>
+
+  <div class="ted-ia-formula">
+    <p style="margin:0;">
+      <strong>Analogia formal:</strong><br>
+      Q<sub>n</sub> = 100 &middot; med(p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>n</sub>) &rarr; Em IA/ML, a saída agregada de muitos inputs qualitativos tende ao valor mediano.<br>
+      Entropia (SD(Q) &le; 1) &rarr; Redução da variabilidade informativa &amp; respostas medianas em larga escala.
+    </p>
+  </div>
+
+  <p class="ted-ia-paragraph">
+    Tal como em democracias de grande escala, onde <em>Q</em> converge para ~50, em sistemas de IA alimentados por milhões de inputs qualitativos, a diversidade efetiva degrada-se, resultando em <strong>respostas medianas e perda de nuance</strong>. A entropia manifesta-se como <strong>redução da qualidade dos dados e da capacidade preditiva</strong> com o crescimento indiscriminado da escala, mesmo que o volume total aumente.
+  </p>
+
+  <p class="ted-ia-paragraph">
+    <strong>Hipótese derivada do TED:</strong> Em sistemas de *machine learning* baseados em inputs qualitativos massivos, a entropia democrática conduz inevitavelmente à degradação da qualidade média da resposta, impondo um limite estrutural ao ganho marginal obtido pelo aumento da escala.
+  </p>
+
+  <div class="ted-ia-highlight">
+    <p class="ted-ia-paragraph" style="margin:0;">
+      Aplicado a sistemas de IA e Machine Learning que dependem de inputs qualitativos (feedback humano, rotulagem subjetiva, preferências coletivas), o TED sugere que a expansão indiscriminada da base de dados não implica necessariamente melhor desempenho: pelo contrário, conduz à convergência para resultados medianos, degradando a qualidade, a capacidade de resposta e a precisão do sistema.
+    </p>
+  </div>
+
+  <p class="ted-ia-paragraph ted-ia-note">
+    Mitigações sugeridas pelo TED: segmentação/clusterização prévia (mini-círculos/mini-conjuntos), ponderação qualitativa, amostragem estratificada e mecanismos de preservação de diversidade informativa antes da agregação global.
+  </p>
+
+  <h3 class="ted-ia-subtitle">Quadro-resumo: Democracia vs. IA/ML</h3>
+  <table class="ted-ia-table">
+    <thead>
+      <tr>
+        <th>Dimensão</th>
+        <th>Democracia (TED)</th>
+        <th>IA/ML (Analogia)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Unidade básica</td>
+        <td>Preferência individual p<sub>i</sub> &in; [0,1]</td>
+        <td>Input qualitativo (rótulo, avaliação, voto binário, preferência)</td>
+      </tr>
+      <tr>
+        <td>Agregador</td>
+        <td>Mediana: p* = med(p<sub>1</sub>, ..., p<sub>n</sub>)</td>
+        <td>Agregação de sinais (muitas vezes média/mediana; em feedback humano, maioria/consenso)</td>
+      </tr>
+      <tr>
+        <td>Métrica de saída</td>
+        <td>Q<sub>n</sub> = 100 &middot; p*</td>
+        <td>Métrica de desempenho/qualidade predita (ex.: score, loss inversa, utilidade)</td>
+      </tr>
+      <tr>
+        <td>Fenómeno de escala</td>
+        <td>Convergência para ~50 com aumento de n</td>
+        <td>Convergência para respostas medianas com grande volume de inputs qualitativos</td>
+      </tr>
+      <tr>
+        <td>Entropia</td>
+        <td>SD(Q) &le; 1 (variabilidade insignificante)</td>
+        <td>Baixa variância informativa; perda de nuance; “medianização”</td>
+      </tr>
+      <tr>
+        <td>Ponto crítico</td>
+        <td>N<sub>crit</sub>: menor n com SD(Q) &le; 1</td>
+        <td>N<sub>crit</sub> (analógico): escala a partir da qual a diversidade efetiva decai significativamente</td>
+      </tr>
+      <tr>
+        <td>Risco principal</td>
+        <td>Mínimo denominador comum (MDC) &rarr; subótimo coletivo</td>
+        <td>Overfitting ao consenso/ruído; respostas medianas; perda de precisão contextual</td>
+      </tr>
+      <tr>
+        <td>Mitigação</td>
+        <td>Reduzir escala; subestruturas (mini-círculos); mecanismos deliberativos</td>
+        <td>Curadoria/ponderação de dados; clusters; amostragem estratificada; preservação de diversidade</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+<!-- =================== /TED — Aplicações em IA e Machine Learning ==================== -->
 
 <div class="license">
             <p>© Lara Raquel Rodrigues Branco Arsénio (CC BY-SA 4.0)</p>
